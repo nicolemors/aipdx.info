@@ -1,26 +1,49 @@
 @import "tailwindcss";
 
+/*
+ * Dark, pink-accented editorial theme, matching the Figma file
+ * (figma.com/design/mxUheDoR1a6CDeL86UH9Ui/A, node 292:57 and children).
+ * `--color-ink`, `--color-surface`, `--color-pink`, and `--color-coral` are
+ * taken directly from hex values in that file, superseding the earlier
+ * carried-over-brand-color guesses. `--color-ink-soft`, `--color-orange`,
+ * and `--color-crimson` are pre-Figma tokens kept for pages this redesign
+ * hasn't touched yet (Sponsorship tiers, gradients, etc.).
+ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --color-ink: #1f1f1f;
+  --color-ink-soft: #5b0028;
+  --color-surface: #121212;
+  --color-paper: #ffffff;
+  --color-orange: #e35f1f;
+  --color-coral: #fc5e71;
+  --color-crimson: #ff3219;
+  --color-pink: #f97cc0;
+  --color-muted: #a0a0a5;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-ink: var(--color-ink);
+  --color-ink-soft: var(--color-ink-soft);
+  --color-surface: var(--color-surface);
+  --color-paper: var(--color-paper);
+  --color-orange: var(--color-orange);
+  --color-coral: var(--color-coral);
+  --color-crimson: var(--color-crimson);
+  --color-pink: var(--color-pink);
+  --color-muted: var(--color-muted);
+  --font-sans: var(--font-montserrat);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-ink);
+  color: var(--color-paper);
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+.gradient-hero {
+  background: linear-gradient(135deg, var(--color-ink-soft) 0%, var(--color-ink) 100%);
+}
+
+.gradient-dark {
+  background: linear-gradient(135deg, var(--color-ink-soft) 0%, var(--color-ink) 100%);
 }
