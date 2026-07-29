@@ -45,10 +45,10 @@ npm run lint    # eslint
 3. Copy the **Internal Integration Secret** — this is your `NOTION_TOKEN`. Keep it
    private; treat it like a password.
 
-### 2. Share the three databases with the integration
+### 2. Share the databases with the integration
 
 The integration can only see databases it's explicitly been given access to. For
-**each** of the three databases below, open it in Notion, click **`···`** (top
+**each** of the databases below, open it in Notion, click **`···`** (top
 right) → **Connections** → **Connect to** → select the integration you just made.
 
 | Database | Env var | Fields the site reads |
@@ -56,6 +56,7 @@ right) → **Connections** → **Connect to** → select the integration you jus
 | Public Events | `NOTION_EVENTS_DB_ID` | Event (title), Date, Time (text), Location (text), Description (rich text, optional), Luma (url). A Meetup field may exist in Notion but is intentionally never read or shown on the site. |
 | Sponsors | `NOTION_SPONSORS_DB_ID` | Name (title), Logo (file/url), Link (url), Tier (select, optional) |
 | Stories / Recaps | `NOTION_STORIES_DB_ID` | Name (title, used as a fallback), Headline (rich text — the display title), Intro (rich text — card/feature excerpt), page content (the body), Cover Image (file/url, optional), Related Event (relation, optional) |
+| Partners | `NOTION_PARTNERS_DB_ID` | Name (title), Logo (files, optional), URL (url, optional) |
 
 **Important:** the Public Events database must be the curated, public-facing one.
 If your workspace also has an internal event-planning database, do not share that
@@ -86,14 +87,34 @@ NOTION_TOKEN=
 NOTION_EVENTS_DB_ID=
 NOTION_SPONSORS_DB_ID=
 NOTION_STORIES_DB_ID=
+NOTION_PARTNERS_DB_ID=
+RESEND_API_KEY=
 ```
+
+## Contact form
+
+The Contact page form (`/contact`) sends submissions as email via
+[Resend](https://resend.com) — there's no third-party form service and nothing is
+stored in Notion. The submitter's address is set as the reply-to, so replying to
+the notification email goes straight to them.
+
+1. Create a Resend account and verify a sending domain (Resend → Domains → Add
+   Domain, then add the DNS records it gives you). This site sends from
+   `contact.aipdx.info`.
+2. Create an API key (Resend → API Keys) and set it as `RESEND_API_KEY`.
+3. Without a Resend key set, the API route returns an error and the form shows a
+   "something went wrong" message — email isn't required for local frontend work,
+   but the form itself won't succeed until it's configured.
+
+The `from` address is hardcoded to `contact@contact.aipdx.info` in
+`src/app/api/contact/route.ts` — update it there if the verified domain changes.
 
 ## Deploying to Vercel
 
 1. Push this repo to GitHub (or GitLab/Bitbucket).
 2. In [Vercel](https://vercel.com), click **Add New → Project** and import the repo.
    Vercel auto-detects Next.js — no config changes needed.
-3. Before the first deploy, add the four environment variables above under
+3. Before the first deploy, add the environment variables above under
    **Project Settings → Environment Variables** (add them to Production, Preview,
    and Development).
 4. Deploy. Every push to the main branch redeploys automatically; every pull

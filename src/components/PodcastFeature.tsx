@@ -30,15 +30,23 @@ export function PodcastFeature({ video }: { video: YoutubeVideo | null }) {
             {video?.title ?? podcast.title}
           </h2>
           <p className="leading-relaxed text-paper/60">{podcast.intro}</p>
-          <a
-            href={video ? `https://www.youtube.com/watch?v=${video.id}` : links.podcastYoutube}
-            target="_blank"
-            rel="noreferrer"
-            className="mt-2 inline-flex items-center gap-3 self-center rounded-full bg-gradient-to-r from-pink to-coral px-6 py-3 text-sm font-bold text-ink sm:self-start"
-          >
-            <PlayIcon className="h-4 w-4" />
-            Watch on YouTube
-          </a>
+          <div className="mt-2 flex flex-wrap items-center justify-center gap-3 sm:justify-start">
+            <a
+              href={video ? `https://www.youtube.com/watch?v=${video.id}` : links.podcastYoutube}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-pink to-coral px-6 py-3 text-sm font-bold text-ink"
+            >
+              <PlayIcon className="h-4 w-4" />
+              Watch on YouTube
+            </a>
+            <a
+              href="/podcast"
+              className="inline-flex items-center gap-3 rounded-full border border-paper/20 px-6 py-3 text-sm font-bold text-paper"
+            >
+              See more episodes
+            </a>
+          </div>
         </div>
       </Container>
     </section>

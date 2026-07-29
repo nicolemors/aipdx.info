@@ -21,23 +21,16 @@ const nextConfig: NextConfig = {
     ];
   },
   images: {
-    // Notion serves uploaded files (event photos, sponsor logos, story covers)
-    // from S3-backed hosts with time-limited signed URLs. If a workspace's
-    // files come from a different S3 region, add that hostname here too.
-    remotePatterns: [
-      { protocol: "https", hostname: "prod-files-secure.s3.us-west-2.amazonaws.com" },
-      { protocol: "https", hostname: "s3.us-west-2.amazonaws.com" },
-      { protocol: "https", hostname: "secure.notion-static.com" },
-      { protocol: "https", hostname: "www.notion.so" },
-      // Fallback event cover photos scraped from Luma's og:image when an
-      // event has no Notion "Image" set — see lib/luma.ts.
-      { protocol: "https", hostname: "images.lumacdn.com" },
-      // Video thumbnails and channel avatar scraped from YouTube — see lib/youtube.ts.
-      { protocol: "https", hostname: "i.ytimg.com" },
-      { protocol: "https", hostname: "yt3.googleusercontent.com" },
-      // Google account avatar for a story's "Person" author, via Notion's people property.
-      { protocol: "https", hostname: "lh3.googleusercontent.com" },
-    ],
+    // Sponsor/partner logos are "external" Notion files — links to whatever
+    // domain that org happens to host its own logo on (kiln.com,
+    // prosperportland.us, ...). That list can't be known ahead of time, and
+    // enumerating hostnames means every new sponsor/partner on an unseen
+    // domain 500s the page until a developer adds it and redeploys — which
+    // defeats the point of managing this content in Notion with no code
+    // changes. Notion's own uploaded files (S3-backed), Luma's og:image
+    // fallback, YouTube thumbnails, and Google avatars all also come through
+    // this same wildcard.
+    remotePatterns: [{ protocol: "https", hostname: "**" }],
   },
 };
 

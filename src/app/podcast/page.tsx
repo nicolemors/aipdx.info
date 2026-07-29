@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { Container } from "@/components/Container";
 import { PodcastEmbed } from "@/components/PodcastEmbed";
-import { getRecentYoutubeVideos, getYoutubeChannelInfo } from "@/lib/youtube";
+import { getRecentYoutubeVideos } from "@/lib/youtube";
 import { links, podcast } from "@/content/site";
 
 export const metadata: Metadata = {
@@ -23,14 +23,13 @@ function formatDuration(duration: string | null) {
 // Matches the Figma "ai-portland-podcast-page" (node 414:41). The comp's
 // featured card is a hand-built player skin (custom play button, scrubber);
 // we drop in the real YouTube iframe embed there instead of recreating that
-// chrome. Everything else — title, thumbnail, duration, publish date,
-// description, channel name/avatar — is real data scraped from the channel
-// (see lib/youtube.ts), not fabricated to match the comp's placeholder copy.
+// chrome. Title/channel aren't repeated above the embed — YouTube's own
+// thumbnail overlay already shows them before playback. Everything else —
+// thumbnail, duration, publish date, description — is real data scraped
+// from the channel (see lib/youtube.ts), not fabricated to match the comp's
+// placeholder copy.
 export default async function PodcastPage() {
-  const [videos, channel] = await Promise.all([
-    getRecentYoutubeVideos(links.podcastYoutube, 4),
-    getYoutubeChannelInfo(links.podcastYoutube),
-  ]);
+  const videos = await getRecentYoutubeVideos(links.podcastYoutube, 4);
   const [featured, ...recent] = videos;
 
   return (
@@ -47,19 +46,7 @@ export default async function PodcastPage() {
         <Container>
           {featured ? (
             <>
-              <div className="flex items-center gap-3">
-                {channel && (
-                  <div className="relative size-9 shrink-0 overflow-hidden rounded-full">
-                    <Image src={channel.avatarUrl} alt="" fill className="object-cover" />
-                  </div>
-                )}
-                <div>
-                  <p className="font-bold text-paper">{featured.title}</p>
-                  <p className="text-sm text-muted">{channel?.name ?? "AI Portland"}</p>
-                </div>
-              </div>
-
-              <div className="mt-6 overflow-hidden rounded-2xl">
+              <div className="overflow-hidden rounded-2xl">
                 <PodcastEmbed src={`https://www.youtube.com/embed/${featured.id}`} height={540} />
               </div>
 

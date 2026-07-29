@@ -1,12 +1,18 @@
 import type { Metadata } from "next";
 import { Container } from "@/components/Container";
+import { PartnerGrid } from "@/components/PartnerGrid";
+import { getPartners, isPartnersConfigured } from "@/lib/notion/partners";
 import { partners } from "@/content/site";
 
 export const metadata: Metadata = {
   title: "Partners | AI Portland",
 };
 
-export default function PartnersPage() {
+export const revalidate = 300;
+
+export default async function PartnersPage() {
+  const allPartners = await getPartners();
+
   return (
     <>
       <section className="gradient-hero py-16 text-paper">
@@ -26,6 +32,18 @@ export default function PartnersPage() {
                 <p className="mt-3 leading-relaxed text-paper/70">{pillar.body}</p>
               </div>
             ))}
+          </div>
+
+          <div className="mt-12">
+            {allPartners.length > 0 ? (
+              <PartnerGrid partners={allPartners} />
+            ) : (
+              <p className="text-center text-paper/60">
+                {isPartnersConfigured
+                  ? "No partners listed yet."
+                  : "Partner data isn't connected yet. Set NOTION_TOKEN and NOTION_PARTNERS_DB_ID to pull partners from Notion."}
+              </p>
+            )}
           </div>
         </Container>
       </section>

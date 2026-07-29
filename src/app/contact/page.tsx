@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Container } from "@/components/Container";
+import { ContactForm } from "@/components/ContactForm";
 import { contact, links } from "@/content/site";
 
 export const metadata: Metadata = {
@@ -17,22 +18,15 @@ export default function ContactPage() {
         <p className="mt-4 leading-relaxed text-paper/75">{contact.intro}</p>
 
         <div className="mt-8 rounded-2xl border border-paper/10 bg-surface p-8">
-          <p className="text-sm font-semibold uppercase tracking-wide text-muted">
-            What&apos;s this about?
-          </p>
-          <ul className="mt-3 space-y-2 text-sm text-paper/75">
-            {contact.purposes.map((purpose) => (
-              <li key={purpose}>· {purpose}</li>
-            ))}
-          </ul>
-
-          <a
-            href={`mailto:${links.contactEmail}`}
-            className="mt-6 inline-block rounded-full bg-pink px-6 py-3 text-sm font-semibold text-ink"
-          >
-            Email {links.contactEmail}
-          </a>
+          <ContactForm />
         </div>
+
+        <p className="mt-6 text-sm text-paper/60">
+          Prefer email?{" "}
+          <a href={`mailto:${links.contactEmail}`} className="text-pink underline">
+            {links.contactEmail}
+          </a>
+        </p>
       </Container>
     </section>
   );

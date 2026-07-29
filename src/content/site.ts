@@ -4,7 +4,7 @@ export const links = {
   linkedinGroup: "https://www.linkedin.com/groups/14375111/",
   podcastYoutube: "https://www.youtube.com/@AIPortlandOrganizers",
   newsletter: "http://eepurl.com/iJv5O6",
-  contactEmail: "hello@aipdx.info",
+  contactEmail: "aipdx.info@gmail.com",
 };
 
 // Primary site sections, shown in the header — order and labels match the
@@ -35,8 +35,9 @@ export const home = {
   heroLead: "Portland-grown,\nhuman-centered AI.",
   missionTitle: "AI Portland Mission",
   missionBody: [
-    "We are a gathering of enthusiasts, professionals, and the AI-curious from all walks of life, committed to fostering an inclusive environment where everyone is welcome to explore, learn, and innovate. Whether you're taking your first steps into the world of AI or you're a seasoned professional looking to push the boundaries of what's possible, AI Portland offers a space to collaborate, share knowledge, and drive positive change.",
-    "Join us in our journey to unlock the potential of AI and discover its impact on our lives, our communities, and the world.",
+    "AI Portland exists to help people show up for one of the most important technological and cultural shifts of our lifetime, together.",
+    "We're building a community for the curious, bringing together artists, technologists, founders, educators, researchers, and neighbors to explore how AI is shaping our work, creativity, and future.",
+    "Through conversations, events, stories, and our podcast, we're documenting this moment as it unfolds and helping Portland write its next chapter.",
   ],
   podcastEyebrow: "It's here!",
   podcastTitle: "(Super)charged by AI",
@@ -47,9 +48,9 @@ export const home = {
     "Step into the forefront of innovation and community engagement by sponsoring AI Portland. Your support directly contributes to a vibrant ecosystem of cutting-edge workshops, enriching talks, and valuable networking opportunities that propel the AI conversation forward. Connect with us and play a pivotal role in a space where technology meets collaboration.",
 };
 
-// Generic placeholder copy — no specific partner orgs named yet. Swap
-// `pillars` for a real list (names/logos/links) once there's one to
-// publish, similar to how the Sponsors database already works.
+// Pillar titles/body copy stay here; actual partner orgs (name/logo/link) are
+// pulled from the Notion Partners database (see src/lib/notion/partners.ts)
+// and shown as one flat list below the pillars — same pattern as Sponsors.
 export const partners = {
   eyebrow: "Friends of AI Portland",
   title: "Our Partners",
@@ -72,40 +73,65 @@ export const partners = {
   cta: "Want to partner with us?",
 };
 
+// Synced from the "AIPDX - Sponsor Deck - 2025.pdf" — values, metrics, and
+// tiers below all mirror that deck's copy and numbers. Update both together
+// if the deck changes.
 export const sponsorship = {
   intro:
     "Step into the forefront of innovation and community engagement by sponsoring AI Portland. Your support directly contributes to a vibrant ecosystem where AI enthusiasts, professionals, and newcomers alike can thrive. Through your sponsorship, we can continue to offer cutting-edge workshops, enriching talks, and valuable networking opportunities that propel the AI conversation forward. Collaborate with AI Portland and play a pivotal role in nurturing a space where technology meets collaboration, and where everyone can leverage the transformative power of AI.",
-  stats: [
-    "Over 2,800 members",
-    "Events average 100-150 attendees depending on venue.",
-    "Attendees come from the design, development, HR, and various professional industries and range from the AI novice to AI experts.",
-    "We average one event per month but expect that number to increase in frequency as we expand our content calendar.",
+  values: [
+    {
+      title: "Brand Awareness",
+      body: "By gaining prominent visibility at AI Portland events and through our partnerships and marketing channels, you can significantly enhance your brand recognition within the AI community and beyond. This exposure positions your brand in front of an engaged audience, driving awareness and interest in your products or services.",
+    },
+    {
+      title: "Access to our Network",
+      body: "Sponsorship grants you access to our extensive network of local AI influencers, thought leaders, and innovators. By engaging with these key players, you can foster valuable collaborations, expand your reach, and enhance your brand's credibility, ultimately positioning yourself to win new customers within the AI community.",
+    },
+    {
+      title: "Thought Leadership",
+      body: "Sponsorship positions you as a key player in the AI community, allowing you to showcase your expertise through AI Portland speaking engagements, workshops, and collaborative content. This not only enhances your brand's visibility but also builds trust and credibility, helping you attract and retain customers.",
+    },
+  ],
+  metrics: [
+    { value: "2,700+", label: "members", detail: "Nearly double 2024 — all active within the last year" },
+    { value: "35", label: "events", detail: "...and counting, with an average event rating of 4.7+ out of 5 stars" },
+    { value: "4,146", label: "event RSVPs", detail: "Across events" },
+    { value: "118", label: "average RSVPs", detail: "Per event, up from 65 in 2024" },
+    { value: "790", label: "repeat attendees", detail: "At monthly events, including local leaders and innovators" },
   ],
   tiers: [
     {
-      name: "Event Sponsor",
+      name: "Event",
       price: "$500",
       cadence: "per event",
       perks: [
-        "Logo and link on Meetup event page, and the AI Portland website",
+        "Logo and link on the event page, and the AI Portland website",
         "Logo, link, and promo copy in all event related communications",
         "Slide in the event presentation and materials",
-        "Opportunity to give short (< 5 mins) plug at the event",
+        "Opportunity to give a short plug at the event",
       ],
       cta: "Contact AI Portland to Sponsor an event",
     },
     {
-      name: "Partner Sponsor",
+      name: "Annual",
       price: "$5,000",
       cadence: "per year",
       perks: [
-        "Logo and link on all Meetup event pages and event related communications for a year",
+        "Logo and link on all event pages and event related communications for a year",
         "Logo and link on the homepage of the AI Portland website",
         "Slide in all event presentations and materials for a year",
-        "Opportunity to give short (< 5 mins) plug at any event",
+        "Opportunity to give a short plug at any event",
         "Opportunity to have a table at any event",
       ],
-      cta: "Contact AI Portland to become a Partner",
+      cta: "Contact AI Portland to become an Annual Sponsor",
+    },
+    {
+      name: "Choose Your Own Adventure",
+      price: "You tell us",
+      cadence: null,
+      body: "Are you working with a budget or have a specific idea of what sponsorship with AI Portland could look like? We'd love to collaborate with you. We have ideas!",
+      cta: "Let's talk",
     },
   ],
 };
@@ -129,26 +155,102 @@ export const speaking = {
   galleryCaption: "The city we call home",
 };
 
+// Discriminated union so the About page can render short staccato "lines"
+// blocks (tight-set, no paragraph spacing) distinctly from normal paragraphs
+// and section headings — the source copy's own rhythm depends on that.
+export type StoryBlock =
+  | { type: "heading"; text: string }
+  | { type: "paragraph"; text: string }
+  | { type: "lines"; lines: string[] }
+  | { type: "quote"; text: string };
+
 export const about = {
+  // Split before the emphasized word so the About hero can bold "together"
+  // without string-parsing this at render time — see about/page.tsx.
+  ledeBeforeEmphasis: "AI Portland exists to help people show up for one of the most important technological and cultural shifts of our lifetime, ",
+  // Two-column layout matching Figma "about-page-redesign" hero-grid (node
+  // 843:40) — condensed manifesto statement + supporting image card, instead
+  // of the flowing prose this used to open with (see `story` below).
+  manifesto: {
+    eyebrow: "Our Mission",
+    headlineBeforeEmphasis: "We believe moments like this deserve to be experienced together.",
+    body: "Artificial intelligence is changing how we create, work, learn, communicate, and imagine what's possible. These moments don't come around very often. They're exciting, uncertain, messy, and full of possibility.",
+    visualImage: "/images/gallery/IMG_7086.jpeg",
+    visualQuoteTitle: "History is unfolding in real time.",
+    visualQuoteBody:
+      "Rather than watching it happen from behind our screens, we believe there's value in showing up—in the same room—to ask questions, challenge ideas, share perspectives, and imagine what's next.",
+  },
+  // Full-bleed background photo + solid card, matching Figma node 844:88 —
+  // the site's own --color-ink is an exact match for the design's #1f1f1f
+  // card background, so no new color was needed.
+  communityCard: {
+    heading: "More than an AI community.",
+    intro:
+      "We're a community for people navigating one of the most significant technological shifts of our generation.",
+    highlights: [
+      "Artists sit next to engineers.",
+      "Founders meet educators.",
+      "Researchers share ideas with designers.",
+      "Students challenge executives.",
+    ],
+    closing: "Curiosity is the only prerequisite.",
+    backgroundImage: "/images/gallery/DSCF7756.jpg",
+  },
   story: [
-    "In the summer of 2023, as the world watched the rapid rise of generative AI, Nicole and Megan found themselves casually yet deeply engaged in conversations about what this emerging technology meant for their lives. They were fascinated by the possibilities, and it became a frequent topic of their discussions.",
-    "Then, one December evening, the stars aligned for an impromptu get-together over a bottle of wine and some baby carrots. Nicole had been listening to a podcast about AI in design on her way over, and naturally, the conversation turned to AI once again. The excitement in the air was palpable.",
-    "That night, Nicole made a casual but significant suggestion: “If we’re so fascinated by this, surely other people must be too. We should start a meetup, we should make AI Portland!” Without hesitation, Megan said, “No. We are too busy, and have way too much going on.”",
-    "But sometimes, a simple idea has a way of sticking with you. The very next day, Megan reconsidered. Maybe there was something more here—a community waiting to be formed. And just like that, AI Portland was born.",
-    "Fast forward, and AI Portland has grown into something beyond their wildest expectations. What started as a casual conversation between friends over a bottle of wine has evolved into a thriving community of AI enthusiasts, creators, and thought leaders, all eager to explore the future together.",
-  ],
+    {
+      type: "paragraph",
+      text: "Whether you're building AI products, experimenting with creative tools, leading organizational change, or simply wondering what all of this means, there's a place for you here.",
+    },
+
+    { type: "heading", text: "Portland has something unique to contribute." },
+    { type: "paragraph", text: "Every city approaches technology differently." },
+    {
+      type: "lines",
+      lines: ["Silicon Valley optimizes for scale.", "Seattle builds platforms.", "New York shapes industries."],
+    },
+    { type: "paragraph", text: "Portland has always been different." },
+    { type: "lines", lines: ["We value creativity.", "Craft.", "Community.", "Curiosity.", "Human-centered design."] },
+    { type: "paragraph", text: "We believe those values matter as AI becomes part of everyday life." },
+    {
+      type: "paragraph",
+      text: "AI Portland exists to help cultivate that conversation—not just about what AI can do, but about what kind of future we want to build together.",
+    },
+  ] satisfies StoryBlock[],
+  ourStory: [
+    { type: "paragraph", text: "Like many good ideas, AI Portland started with a conversation." },
+    {
+      type: "paragraph",
+      text: "In late 2023, Nicole and Megan found themselves talking about AI almost every time they got together. One evening, over a bottle of wine and a bag of baby carrots, Nicole floated an idea:",
+    },
+    {
+      type: "quote",
+      text: "If we're this fascinated by what's happening, there have to be other people who want to talk about it too.",
+    },
+    { type: "paragraph", text: "Megan's first response?" },
+    { type: "quote", text: "Absolutely not. We're way too busy." },
+    { type: "paragraph", text: "By the next day, she'd changed her mind." },
+    {
+      type: "paragraph",
+      text: "What began as a single meetup has grown into a community of thousands, bringing together people from across Portland to explore one of the defining moments of our time.",
+    },
+    {
+      type: "paragraph",
+      text: "The conversations have expanded beyond our events into our podcast, stories, partnerships, and growing network—but the heart of AI Portland hasn't changed.",
+    },
+    { type: "paragraph", text: "It still begins with people gathering in a room, curious enough to ask:" },
+    { type: "lines", lines: ["What's happening?", "What does it mean?", "Where do we go from here?"] },
+  ] satisfies StoryBlock[],
   team: [
+    {
+      name: "Nicole Mors",
+      bio: "Nicole is a designer who's endlessly curious about how technology shapes the way we create, work, and connect, and more importantly, what those changes mean to people and hopefully for people.\n\nBy day, she leads Product Design at Lithia & Driveway. She co-founded AI Portland to create the kind of conversations she wanted to be part of. Through events, storytelling, and the (Super)charged by AI podcast, she enjoys bringing together people with different perspectives to explore ideas, challenge assumptions, and imagine what's next.\n\nOutside of work, Nicole spends her time with her kids, reading a good book, tackling a home project, and hanging out with Gary, her beloved French bulldog.",
+    },
     {
       name: "Megan Notarte, PMP",
       role: "Partner at Cloud Four",
       bio: "Megan is a technology leader with over a decade of experience in spearheading innovative initiatives and managing high-impact projects across various industries. As the co-founder of AI Portland, she’s built a community focused on demystifying generative AI and its applications, organizing monthly events that bridge the gap between AI technology and practical business applications. Megan’s career also spans roles in operations and business management, including as a Partner at Cloud Four, where she’s led strategic initiatives and managed sizable projects for various companies, including several in the Fortune 500.",
     },
-    {
-      name: "J. Nicole Mors",
-      role: "Group Product Design Manager, Driveway",
-      bio: "Nicole is a seasoned Product Design Leader with a deep passion for crafting engaging digital experiences that drive business success across diverse industries. Her expertise spans leading design teams within tech organizations of all sizes, where she's committed to fostering growth and instilling a culture of passion and enthusiasm. Nicole volunteers as the Volunteer Director on the AIGA Portland Board of Directors, contributing to the growth and culture of the design community in Portland. When she's not working you can find Nicole spending time with her kids, collecting french bulldogs, or reading a good book.",
-    },
-  ],
+  ] satisfies { name: string; role?: string; bio: string }[],
 };
 
 export const codeOfConduct = {
