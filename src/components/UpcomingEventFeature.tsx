@@ -61,7 +61,7 @@ export function UpcomingEventFeature({ event }: { event: AiPortlandEvent }) {
                   href={event.lumaUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-block rounded-full bg-white px-6 py-3 text-xs font-extrabold uppercase tracking-wide text-ink"
+                  className="inline-block rounded-full bg-white px-6 py-3 text-xs font-extrabold uppercase tracking-wide text-ink transition hover:opacity-90"
                 >
                   Register for Event
                 </a>

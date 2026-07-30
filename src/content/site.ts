@@ -152,7 +152,7 @@ export const speaking = {
   intro:
     "Nicole and Megan offer a diverse range of public speaking engagements designed to inform, inspire, and ignite interest in the field of artificial intelligence.",
   cta: "Contact for booking inquiries",
-  galleryCaption: "The city we call home",
+  galleryCaption: "On stage at Silicon Forest Summit",
 };
 
 // Discriminated union so the About page can render short staccato "lines"
@@ -175,7 +175,7 @@ export const about = {
     eyebrow: "Our Mission",
     headlineBeforeEmphasis: "We believe moments like this deserve to be experienced together.",
     body: "Artificial intelligence is changing how we create, work, learn, communicate, and imagine what's possible. These moments don't come around very often. They're exciting, uncertain, messy, and full of possibility.",
-    visualImage: "/images/gallery/IMG_7086.jpeg",
+    visualImage: "/images/gallery/AIPDX_feb2025-9528.jpg",
     visualQuoteTitle: "History is unfolding in real time.",
     visualQuoteBody:
       "Rather than watching it happen from behind our screens, we believe there's value in showing up—in the same room—to ask questions, challenge ideas, share perspectives, and imagine what's next.",
@@ -194,37 +194,38 @@ export const about = {
       "Students challenge executives.",
     ],
     closing: "Curiosity is the only prerequisite.",
-    backgroundImage: "/images/gallery/DSCF7756.jpg",
+    backgroundImage: "/images/gallery/AIPDX_Kiln_8142025-1313.jpg",
   },
   story: [
     {
       type: "paragraph",
       text: "Whether you're building AI products, experimenting with creative tools, leading organizational change, or simply wondering what all of this means, there's a place for you here.",
     },
-
-    { type: "heading", text: "Portland has something unique to contribute." },
-    { type: "paragraph", text: "Every city approaches technology differently." },
-    {
-      type: "lines",
-      lines: ["Silicon Valley optimizes for scale.", "Seattle builds platforms.", "New York shapes industries."],
-    },
-    { type: "paragraph", text: "Portland has always been different." },
-    { type: "lines", lines: ["We value creativity.", "Craft.", "Community.", "Curiosity.", "Human-centered design."] },
-    { type: "paragraph", text: "We believe those values matter as AI becomes part of everyday life." },
-    {
-      type: "paragraph",
-      text: "AI Portland exists to help cultivate that conversation—not just about what AI can do, but about what kind of future we want to build together.",
-    },
   ] satisfies StoryBlock[],
+  // Image + prose layout for the "Portland has something unique to
+  // contribute" section — matches the mockup's two-column treatment (photo
+  // left, text right), dropping the Silicon Valley/Seattle/New York
+  // comparison lines that aren't part of that design.
+  regional: {
+    heading: "Portland has something unique to contribute.",
+    image: "/images/hero-portland-sign.jpg",
+    intro: "Every city approaches technology differently.",
+    valuesIntro: "Portland has always been different.",
+    values: ["We value creativity.", "Craft.", "Community.", "Curiosity.", "Human-centered design."],
+    closing: "We believe those values matter as AI becomes part of everyday life.",
+    finalBeforeEmphasis:
+      "AI Portland exists to help cultivate that conversation—not just about what AI can do, but about ",
+    finalEmphasis: "what kind of future we want to build together.",
+  },
   ourStory: [
     { type: "paragraph", text: "Like many good ideas, AI Portland started with a conversation." },
     {
       type: "paragraph",
-      text: "In late 2023, Nicole and Megan found themselves talking about AI almost every time they got together. One evening, over a bottle of wine and a bag of baby carrots, Nicole floated an idea:",
+      text: "In late 2023, Nicole and Megan found themselves talking about AI almost every time they got together. One evening, over a bottle of wine, Nicole floated an idea:",
     },
     {
       type: "quote",
-      text: "If we're this fascinated by what's happening, there have to be other people who want to talk about it too.",
+      text: "If we're this fascinated by what's happening, there have to be other people who want to talk about it too. We should start something, we should make a group, AI Portland.",
     },
     { type: "paragraph", text: "Megan's first response?" },
     { type: "quote", text: "Absolutely not. We're way too busy." },
@@ -239,6 +240,10 @@ export const about = {
     },
     { type: "paragraph", text: "It still begins with people gathering in a room, curious enough to ask:" },
     { type: "lines", lines: ["What's happening?", "What does it mean?", "Where do we go from here?"] },
+    {
+      type: "paragraph",
+      text: "What started as a conversation between two friends has evolved into the largest tech organization in Portland.",
+    },
   ] satisfies StoryBlock[],
   team: [
     {

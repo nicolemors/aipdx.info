@@ -50,7 +50,7 @@ function MenuButton({ open, onClick }: { open: boolean; onClick: () => void }) {
     <button
       type="button"
       onClick={onClick}
-      className="flex h-9 w-9 items-center justify-center rounded-full text-paper"
+      className="flex h-9 w-9 items-center justify-center rounded-full text-paper transition hover:bg-paper/10"
       aria-label={open ? "Close menu" : "Open menu"}
       aria-expanded={open}
     >

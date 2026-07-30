@@ -49,7 +49,7 @@ export function Footer() {
               href={links.newsletter}
               target="_blank"
               rel="noreferrer"
-              className="mt-3 inline-block rounded-full bg-pink px-5 py-2.5 text-sm font-semibold text-ink"
+              className="mt-3 inline-block rounded-full bg-pink px-5 py-2.5 text-sm font-semibold text-ink transition hover:opacity-90"
             >
               Sign up for the newsletter
             </a>

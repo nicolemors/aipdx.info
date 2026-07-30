@@ -35,14 +35,14 @@ export function PodcastFeature({ video }: { video: YoutubeVideo | null }) {
               href={video ? `https://www.youtube.com/watch?v=${video.id}` : links.podcastYoutube}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-pink to-coral px-6 py-3 text-sm font-bold text-ink"
+              className="inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-pink to-coral px-6 py-3 text-sm font-bold text-ink transition hover:opacity-90"
             >
               <PlayIcon className="h-4 w-4" />
               Watch on YouTube
             </a>
             <a
               href="/podcast"
-              className="inline-flex items-center gap-3 rounded-full border border-paper/20 px-6 py-3 text-sm font-bold text-paper"
+              className="inline-flex items-center gap-3 rounded-full border border-paper/20 px-6 py-3 text-sm font-bold text-paper transition hover:border-paper/40 hover:bg-paper/5"
             >
               See more episodes
             </a>

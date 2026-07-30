@@ -53,7 +53,7 @@ export default async function PartnersPage() {
           <h2 className="text-2xl font-bold text-paper">{partners.cta}</h2>
           <a
             href="/contact"
-            className="mt-6 inline-block rounded-full bg-pink px-6 py-3 text-sm font-semibold text-ink"
+            className="mt-6 inline-block rounded-full bg-pink px-6 py-3 text-sm font-semibold text-ink transition hover:opacity-90"
           >
             Reach out
           </a>

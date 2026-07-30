@@ -51,7 +51,7 @@ export function EventCard({
               href={event.lumaUrl}
               target="_blank"
               rel="noreferrer"
-              className="rounded-full bg-white px-6 py-2.5 text-xs font-extrabold uppercase tracking-wide text-ink"
+              className="rounded-full bg-white px-6 py-2.5 text-xs font-extrabold uppercase tracking-wide text-ink transition hover:opacity-90"
             >
               RSVP for Event
             </a>

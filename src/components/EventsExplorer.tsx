@@ -41,8 +41,10 @@ export function EventsExplorer({ events }: { events: AiPortlandEvent[] }) {
           <button
             type="button"
             onClick={() => setType(null)}
-            className={`rounded-full px-4 py-2 text-xs font-bold ${
-              type === null ? "bg-pink text-ink" : "border border-paper/10 bg-[#2c2c2e] text-paper"
+            className={`rounded-full px-4 py-2 text-xs font-bold transition ${
+              type === null
+                ? "bg-pink text-ink hover:opacity-90"
+                : "border border-paper/10 bg-[#2c2c2e] text-paper hover:bg-[#3a3a3c]"
             }`}
           >
             ALL
@@ -52,8 +54,10 @@ export function EventsExplorer({ events }: { events: AiPortlandEvent[] }) {
               key={t}
               type="button"
               onClick={() => setType(t)}
-              className={`rounded-full px-4 py-2 text-xs font-bold uppercase ${
-                type === t ? "bg-pink text-ink" : "border border-paper/10 bg-[#2c2c2e] text-paper"
+              className={`rounded-full px-4 py-2 text-xs font-bold uppercase transition ${
+                type === t
+                  ? "bg-pink text-ink hover:opacity-90"
+                  : "border border-paper/10 bg-[#2c2c2e] text-paper hover:bg-[#3a3a3c]"
               }`}
             >
               {t}
@@ -67,8 +71,8 @@ export function EventsExplorer({ events }: { events: AiPortlandEvent[] }) {
           <button
             type="button"
             onClick={() => setView("upcoming")}
-            className={`rounded-full px-4 py-1.5 text-[13px] font-bold ${
-              view === "upcoming" ? "bg-ink text-paper" : "text-muted"
+            className={`rounded-full px-4 py-1.5 text-[13px] font-bold transition ${
+              view === "upcoming" ? "bg-ink text-paper" : "text-muted hover:text-paper"
             }`}
           >
             Upcoming
@@ -76,8 +80,8 @@ export function EventsExplorer({ events }: { events: AiPortlandEvent[] }) {
           <button
             type="button"
             onClick={() => setView("past")}
-            className={`rounded-full px-4 py-1.5 text-[13px] font-bold ${
-              view === "past" ? "bg-ink text-paper" : "text-muted"
+            className={`rounded-full px-4 py-1.5 text-[13px] font-bold transition ${
+              view === "past" ? "bg-ink text-paper" : "text-muted hover:text-paper"
             }`}
           >
             Past

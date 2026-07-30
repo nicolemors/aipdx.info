@@ -59,7 +59,7 @@ export default async function EventsPage() {
           <p className="mt-4 leading-relaxed text-paper/75">{getInvolved.body}</p>
           <a
             href="/contact"
-            className="mt-6 inline-block rounded-full bg-crimson px-6 py-3 text-sm font-semibold text-paper"
+            className="mt-6 inline-block rounded-full bg-crimson px-6 py-3 text-sm font-semibold text-paper transition hover:opacity-90"
           >
             {getInvolved.cta}
           </a>

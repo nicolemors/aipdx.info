@@ -56,6 +56,22 @@ export default async function HomePage() {
         </section>
       )}
 
+      <section className="py-16">
+        <Container>
+          <div className="grid gap-4 sm:grid-cols-3">
+            {[
+              { src: "/images/gallery/DSCF7756.jpg", alt: "A panel discussion in front of a warm-lit Kiln backdrop" },
+              { src: "/images/gallery/IMG_1275.jpeg", alt: "Attendees seated on bleacher-style steps at an AI Portland event" },
+              { src: "/images/gallery/IMG_7102.jpeg", alt: "A panel discussion in front of the AI Portland logo" },
+            ].map((image) => (
+              <div key={image.src} className="relative aspect-square w-full overflow-hidden rounded-2xl">
+                <Image src={image.src} alt={image.alt} fill sizes="(min-width: 640px) 33vw, 100vw" className="object-cover" />
+              </div>
+            ))}
+          </div>
+        </Container>
+      </section>
+
       <PodcastFeature video={latestVideo} />
 
       {nextEvent && <UpcomingEventFeature event={nextEvent} />}
@@ -72,14 +88,39 @@ export default async function HomePage() {
         </section>
       )}
 
+      <section className="relative overflow-hidden">
+        <div className="relative aspect-[21/9] w-full">
+          <Image
+            src="/images/gallery/IMG_0457.jpeg"
+            alt="A packed multi-level venue during an AI Portland event"
+            fill
+            sizes="100vw"
+            className="object-cover"
+          />
+        </div>
+      </section>
+
       <section className="py-20">
-        <Container className="max-w-3xl">
-          <h2 className="text-2xl font-bold text-paper">{home.missionTitle}</h2>
-          {home.missionBody.map((paragraph) => (
-            <p key={paragraph} className="mt-4 leading-relaxed text-paper/75">
-              {paragraph}
-            </p>
-          ))}
+        <Container>
+          <div className="grid gap-10 lg:grid-cols-[400px_1fr] lg:items-center">
+            <div className="relative aspect-[4/5] w-full overflow-hidden rounded-3xl">
+              <Image
+                src="/images/gallery/IMG_8602.jpeg"
+                alt="Three AI Portland members chatting on a couch"
+                fill
+                sizes="(min-width: 1024px) 400px, 100vw"
+                className="object-cover"
+              />
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold text-paper">{home.missionTitle}</h2>
+              {home.missionBody.map((paragraph) => (
+                <p key={paragraph} className="mt-4 leading-relaxed text-paper/75">
+                  {paragraph}
+                </p>
+              ))}
+            </div>
+          </div>
         </Container>
       </section>
 

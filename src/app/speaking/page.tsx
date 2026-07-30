@@ -4,8 +4,9 @@ import { Container } from "@/components/Container";
 import { speaking } from "@/content/site";
 
 const galleryPhotos = [
-  { src: "/images/speaking-1.jpg", alt: "Downtown Portland at dusk" },
-  { src: "/images/speaking-2.jpg", alt: "Downtown Portland street lamps at dusk" },
+  { src: "/images/gallery/SF 266.jpg", alt: "AI Portland co-founders on stage at the Silicon Forest Summit" },
+  { src: "/images/gallery/SF 264.jpg", alt: "An AI Portland co-founder speaking into a microphone at the Silicon Forest Summit" },
+  { src: "/images/gallery/SF 258.jpg", alt: "An AI Portland co-founder speaking into a microphone at the Silicon Forest Summit" },
 ];
 
 export const metadata: Metadata = {
@@ -21,7 +22,7 @@ export default function SpeakingPage() {
           <p className="mt-4 max-w-2xl leading-relaxed text-paper/90">{speaking.intro}</p>
           <a
             href="/contact"
-            className="mt-6 inline-block rounded-full bg-pink px-6 py-3 text-sm font-semibold text-ink"
+            className="mt-6 inline-block rounded-full bg-pink px-6 py-3 text-sm font-semibold text-ink transition hover:opacity-90"
           >
             {speaking.cta}
           </a>
@@ -33,14 +34,14 @@ export default function SpeakingPage() {
           <p className="text-sm font-semibold uppercase tracking-wide text-muted">
             {speaking.galleryCaption}
           </p>
-          <div className="mt-6 grid gap-4 sm:grid-cols-2">
+          <div className="mt-6 grid gap-4 sm:grid-cols-3">
             {galleryPhotos.map((photo) => (
               <div key={photo.src} className="relative aspect-square overflow-hidden rounded-2xl bg-surface">
                 <Image
                   src={photo.src}
                   alt={photo.alt}
                   fill
-                  sizes="(min-width: 640px) 50vw, 100vw"
+                  sizes="(min-width: 640px) 33vw, 100vw"
                   className="object-cover"
                 />
               </div>

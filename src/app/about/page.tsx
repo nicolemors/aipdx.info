@@ -20,9 +20,9 @@ function StoryBlocks({ blocks }: { blocks: StoryBlock[] }) {
 
     if (block.type === "lines") {
       return (
-        <div key={i} className="mt-4">
+        <div key={i} className="mt-4 space-y-1 border-l-2 border-[#e26600] pl-4">
           {block.lines.map((line) => (
-            <p key={line} className="font-semibold leading-snug text-paper/90">
+            <p key={line} className="font-bold leading-snug text-[#e26600]">
               {line}
             </p>
           ))}
@@ -98,8 +98,8 @@ export default function AboutPage() {
         <Container>
           <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
             <div>
-              <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-coral">
-                <span className="h-1.5 w-1.5 rounded-full bg-coral" />
+              <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-[#e26600]">
+                <span className="h-1.5 w-1.5 rounded-full bg-[#e26600]" />
                 {about.manifesto.eyebrow}
               </p>
               <h2 className="mt-4 text-3xl font-extrabold leading-tight text-paper sm:text-4xl">
@@ -144,7 +144,7 @@ export default function AboutPage() {
               {about.communityCard.heading}
             </h2>
             <p className="mt-4 leading-relaxed text-paper/75">{about.communityCard.intro}</p>
-            <div className="mt-4 space-y-1">
+            <div className="mt-4 space-y-1 border-l-2 border-[#e26600] pl-4">
               {about.communityCard.highlights.map((line) => (
                 <p key={line} className="font-bold text-[#e26600]">
                   {line}
@@ -159,6 +159,42 @@ export default function AboutPage() {
       <section className="py-16">
         <Container className="max-w-3xl">
           <StoryBlocks blocks={about.story} />
+        </Container>
+      </section>
+
+      <section className="py-16">
+        <Container>
+          <div className="grid gap-10 lg:grid-cols-[400px_1fr] lg:items-start">
+            <div className="relative aspect-[4/5] w-full overflow-hidden rounded-3xl">
+              <Image
+                src={about.regional.image}
+                alt="The Portland, Oregon Old Town sign at dusk"
+                fill
+                sizes="(min-width: 1024px) 400px, 100vw"
+                className="object-cover object-[90%_center]"
+              />
+            </div>
+
+            <div>
+              <h2 className="text-3xl font-extrabold leading-tight text-paper sm:text-4xl">{about.regional.heading}</h2>
+              <p className="mt-6 leading-relaxed text-paper/70">{about.regional.intro}</p>
+
+              <div className="mt-6">
+                <p className="leading-relaxed text-paper/70">{about.regional.valuesIntro}</p>
+                {about.regional.values.map((value) => (
+                  <p key={value} className="font-bold text-[#e26600]">
+                    {value}
+                  </p>
+                ))}
+              </div>
+
+              <p className="mt-6 leading-relaxed text-paper/70">{about.regional.closing}</p>
+              <p className="mt-6 leading-relaxed text-paper/70">
+                {about.regional.finalBeforeEmphasis}
+                <span className="font-bold text-paper">{about.regional.finalEmphasis}</span>
+              </p>
+            </div>
+          </div>
         </Container>
       </section>
 
@@ -191,9 +227,23 @@ export default function AboutPage() {
       </section>
 
       <section id="story" className="scroll-mt-36 py-16">
-        <Container className="max-w-3xl">
-          <h2 className="text-2xl font-bold text-paper">Our Story</h2>
-          <StoryBlocks blocks={about.ourStory} />
+        <Container>
+          <div className="grid gap-10 lg:grid-cols-[400px_1fr] lg:items-start">
+            <div className="relative aspect-[4/5] w-full overflow-hidden rounded-3xl">
+              <Image
+                src="/images/gallery/megan-nicole.jpg"
+                alt="Megan and Nicole speaking together on stage"
+                fill
+                sizes="(min-width: 1024px) 400px, 100vw"
+                className="object-cover -scale-x-100 object-[40%_center]"
+              />
+            </div>
+
+            <div>
+              <h2 className="text-2xl font-bold text-paper">Our Story</h2>
+              <StoryBlocks blocks={about.ourStory} />
+            </div>
+          </div>
         </Container>
       </section>
     </>

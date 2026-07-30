@@ -9,17 +9,32 @@ const LOGO_SCALE: Record<string, number> = {
   "Willamette University": 1.3,
 };
 
+// Manual dark-card override for logos whose corners are transparent (so
+// detectCardColor finds nothing to match) but still need a dark card —
+// e.g. a light/reversed-color logo. Takes priority over the auto-detected
+// sponsor.cardColor; the default card is white otherwise.
+const CARD_BG_OVERRIDE: Record<string, string> = {
+  "Willamette University": "#1f1f1f",
+};
+
 export function SponsorGrid({ sponsors }: { sponsors: Sponsor[] }) {
   return (
     <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-6">
       {sponsors.map((sponsor) => {
-        const scale = LOGO_SCALE[sponsor.name] ?? 1;
+        const name = sponsor.name.trim();
+        const scale = LOGO_SCALE[name] ?? 1;
+        const bgColor = CARD_BG_OVERRIDE[name] ?? sponsor.cardColor;
         const content = sponsor.logoUrl ? (
           <div
-            className="relative h-20 w-48 grayscale transition hover:grayscale-0"
-            style={{ transform: scale !== 1 ? `scale(${scale})` : undefined }}
+            className={`flex h-20 w-48 items-center justify-center rounded-xl p-3 ${bgColor ? "" : "bg-paper"}`}
+            style={bgColor ? { backgroundColor: bgColor } : undefined}
           >
-            <Image src={sponsor.logoUrl} alt={sponsor.name} fill sizes="192px" className="object-contain" />
+            <div
+              className="relative h-full w-full"
+              style={scale !== 1 ? { transform: `scale(${scale})` } : undefined}
+            >
+              <Image src={sponsor.logoUrl} alt={sponsor.name} fill sizes="192px" className="object-contain" />
+            </div>
           </div>
         ) : (
           <span className="text-sm font-medium text-paper/70 hover:text-paper">{sponsor.name}</span>

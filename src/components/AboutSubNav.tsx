@@ -42,7 +42,9 @@ export function AboutSubNav() {
           key={id}
           href={`#${id}`}
           className={`rounded-full px-3.5 py-2.5 text-[13px] uppercase tracking-wide transition ${
-            active === id ? "bg-[#e26600] font-bold text-paper" : "font-semibold text-paper/80"
+            active === id
+              ? "bg-[#e26600] font-bold text-paper hover:opacity-90"
+              : "font-semibold text-paper/80 hover:text-paper"
           }`}
         >
           {label}
