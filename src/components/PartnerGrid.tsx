@@ -39,7 +39,7 @@ const CARD_BG_OVERRIDE: Record<string, string> = {
 
 export function PartnerGrid({ partners }: { partners: Partner[] }) {
   return (
-    <div className="flex flex-wrap items-center gap-x-14 gap-y-8">
+    <div className="flex flex-wrap items-center justify-center gap-x-14 gap-y-8 sm:justify-start">
       {partners.map((partner) => {
         const name = partner.name.trim();
         const scale = LOGO_SCALE[name] ?? 1;
