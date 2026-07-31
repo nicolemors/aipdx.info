@@ -259,7 +259,6 @@ export const about = {
 };
 
 export const codeOfConduct = {
-  lastUpdated: "2/23/2024",
   body: "We are committed to fostering an inclusive, harassment-free environment for all members, irrespective of their backgrounds. We expect respectful behavior and do not tolerate harassment, discrimination, or inappropriate content. Violations may result in warnings, suspensions, or expulsion. Weapons and drugs are prohibited in our community spaces and events. Your participation is conditional on upholding these principles as we strive to create a welcoming and respectful community for everyone.",
 };
 

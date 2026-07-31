@@ -11,7 +11,6 @@ export default function CodeOfConductPage() {
     <section className="py-20">
       <Container className="max-w-2xl">
         <h1 className="text-4xl font-bold text-paper">Code of Conduct</h1>
-        <p className="mt-2 text-sm text-muted">Last updated: {codeOfConduct.lastUpdated}</p>
         <p className="mt-6 leading-relaxed text-paper/75">{codeOfConduct.body}</p>
       </Container>
     </section>
