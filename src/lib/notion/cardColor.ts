@@ -17,7 +17,7 @@ export async function detectCardColor(logoUrl: string | null): Promise<string | 
   if (!logoUrl) return null;
 
   try {
-    const res = await fetch(logoUrl);
+    const res = await fetch(logoUrl, { signal: AbortSignal.timeout(8000) });
     if (!res.ok) return null;
     const buffer = Buffer.from(await res.arrayBuffer());
 
