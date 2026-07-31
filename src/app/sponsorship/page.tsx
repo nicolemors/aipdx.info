@@ -16,28 +16,23 @@ export default async function SponsorshipPage() {
 
   return (
     <>
-      <section className="relative overflow-hidden text-paper">
-        <div className="relative aspect-[4/3] w-full sm:aspect-[16/9]">
-          <Image
-            src="/images/gallery/IMG_2667.jpeg"
-            alt="A sponsor booth conversation at an AI Portland event"
-            fill
-            sizes="100vw"
-            className="object-cover"
-            priority
-          />
-          <div
-            className="absolute inset-0"
-            style={{
-              backgroundImage:
-                "linear-gradient(90deg, rgba(18,18,18,0.98) 0%, rgba(18,18,18,0.9) 35%, rgba(18,18,18,0.35) 75%, rgba(18,18,18,0.85) 100%)",
-            }}
-          />
-        </div>
-        <Container className="absolute inset-0 flex items-center py-12">
-          <div className="max-w-2xl">
-            <h1 className="text-4xl font-bold">Sponsorship</h1>
-            <p className="mt-4 leading-relaxed text-paper/90">{sponsorship.intro}</p>
+      <section className="gradient-hero py-16 text-paper">
+        <Container>
+          <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
+            <div>
+              <h1 className="text-4xl font-bold">Sponsorship</h1>
+              <p className="mt-4 leading-relaxed text-paper/90">{sponsorship.intro}</p>
+            </div>
+            <div className="relative aspect-square w-full overflow-hidden rounded-2xl border border-paper/10">
+              <Image
+                src="/images/gallery/IMG_2667.jpeg"
+                alt="A sponsor booth conversation at an AI Portland event"
+                fill
+                sizes="(min-width: 1024px) 50vw, 100vw"
+                className="object-cover"
+                priority
+              />
+            </div>
           </div>
         </Container>
       </section>
