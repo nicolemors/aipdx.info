@@ -86,7 +86,7 @@ export function Nav() {
       </div>
 
       {open && (
-        <nav className="sm:hidden flex flex-col gap-1 border-t border-paper/10 px-6 pb-4">
+        <nav className="sm:hidden flex flex-col gap-1 border-t border-paper/10 px-6 pt-4 pb-4">
           <NavLinks onNavigate={closeMenu} linkClassName="flex min-h-10 items-center" />
         </nav>
       )}
