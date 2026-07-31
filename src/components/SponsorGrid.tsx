@@ -14,7 +14,7 @@ const LOGO_SCALE: Record<string, number> = {
 // e.g. a light/reversed-color logo. Takes priority over the auto-detected
 // sponsor.cardColor; the default card is white otherwise.
 const CARD_BG_OVERRIDE: Record<string, string> = {
-  "Willamette University": "#1f1f1f",
+  "Willamette University": "transparent",
 };
 
 export function SponsorGrid({ sponsors }: { sponsors: Sponsor[] }) {

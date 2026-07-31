@@ -29,7 +29,7 @@ const CARD_BG_OVERRIDE: Record<string, string> = {
   "HR Annie Consulting": "#1f1f1f",
   "52 Limited": "#1f1f1f",
   "Keboola": "#000000",
-  "Willamette University School of Computing & Information Sciences": "#1f1f1f",
+  "Willamette University School of Computing & Information Sciences": "transparent",
   "Prosper Portland": "#1f1f1f",
   "Apify": "#1f1f1f",
   "City of Portland": "#1f1f1f",
