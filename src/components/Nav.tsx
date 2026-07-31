@@ -28,7 +28,7 @@ function Wordmark({ className }: { className?: string }) {
   );
 }
 
-function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
+function NavLinks({ onNavigate, linkClassName = "" }: { onNavigate?: () => void; linkClassName?: string }) {
   return (
     <>
       {nav.map((item) => (
@@ -36,7 +36,7 @@ function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
           key={item.href}
           href={item.href}
           onClick={onNavigate}
-          className="text-sm font-medium text-paper transition hover:text-pink"
+          className={`text-sm font-medium text-paper transition hover:text-pink ${linkClassName}`}
         >
           {item.label}
         </Link>
@@ -87,7 +87,7 @@ export function Nav() {
 
       {open && (
         <nav className="sm:hidden flex flex-col gap-1 border-t border-paper/10 px-6 pb-4">
-          <NavLinks onNavigate={closeMenu} />
+          <NavLinks onNavigate={closeMenu} linkClassName="flex min-h-10 items-center" />
         </nav>
       )}
     </header>
