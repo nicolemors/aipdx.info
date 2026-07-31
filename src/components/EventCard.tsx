@@ -18,7 +18,7 @@ export function EventCard({
   return (
     <article className="flex w-full overflow-hidden rounded-3xl border border-pink bg-gradient-to-r from-[#2a1822] to-surface">
       {event.imageUrl && (
-        <div className="relative size-[260px] shrink-0">
+        <div className="relative hidden size-[260px] shrink-0 sm:block">
           <Image src={event.imageUrl} alt="" fill sizes="260px" className="object-cover" />
         </div>
       )}
