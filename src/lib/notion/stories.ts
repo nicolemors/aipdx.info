@@ -48,6 +48,10 @@ function toStory(page: PageObjectResponse): Story | null {
   const title = headline ?? name;
   if (!title) return null;
 
+  const publishProp = props["Publish"];
+  const isPublished = publishProp?.type === "checkbox" && publishProp.checkbox;
+  if (!isPublished) return null;
+
   const subheadProp = props["Subhead"];
   const subhead = subheadProp?.type === "rich_text" ? plainText(subheadProp.rich_text) : null;
 
