@@ -22,12 +22,18 @@ export function LatestStoryFeature({ story, excerpt }: { story: Story; excerpt: 
             Latest Community Feature
           </span>
           <h2 className="mt-4 text-3xl font-extrabold leading-tight tracking-[-0.04em] text-paper sm:text-4xl lg:text-[44px]">
-            {story.title}
+            <Link href={`/stories/${story.id}`} className="transition hover:text-pink">
+              {story.title}
+            </Link>
           </h2>
         </div>
 
         <div className="mt-10 grid gap-6 lg:grid-cols-[minmax(0,1fr)_440px]">
-          <div className="relative min-h-[320px] overflow-hidden rounded-[24px] bg-surface lg:min-h-[540px]">
+          <Link
+            href={`/stories/${story.id}`}
+            aria-label={story.title}
+            className="relative min-h-[320px] overflow-hidden rounded-[24px] bg-surface lg:min-h-[540px]"
+          >
             <Image
               src={story.coverImageUrl ?? "/images/story-fallback.jpg"}
               alt=""
@@ -35,7 +41,7 @@ export function LatestStoryFeature({ story, excerpt }: { story: Story; excerpt: 
               sizes="(min-width: 1024px) 60vw, 100vw"
               className="object-cover"
             />
-          </div>
+          </Link>
 
           <div className="flex flex-col justify-center gap-8 rounded-[24px] border border-paper/10 bg-surface p-8 lg:p-10">
             <div className="flex flex-col gap-4">
