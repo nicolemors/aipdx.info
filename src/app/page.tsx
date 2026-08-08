@@ -34,6 +34,9 @@ export default async function HomePage() {
             priority
           />
           <div className="absolute inset-0 bg-black/35" />
+          <p className="absolute bottom-3 right-3 rounded-full bg-ink/60 px-2.5 py-1 text-[11px] text-paper/70 backdrop-blur-sm">
+            Photo: Jimmy Woo
+          </p>
         </div>
 
         <Container className="absolute inset-0 flex items-center pb-16">

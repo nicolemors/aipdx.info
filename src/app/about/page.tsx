@@ -70,6 +70,9 @@ export default function AboutPage() {
                 "linear-gradient(90deg, rgba(18,18,18,0.98) 0%, rgba(18,18,18,0.9) 35%, rgba(18,18,18,0.35) 75%, rgba(18,18,18,0.85) 100%)",
             }}
           />
+          <p className="absolute bottom-3 right-3 rounded-full bg-ink/60 px-2.5 py-1 text-[11px] text-paper/70 backdrop-blur-sm">
+            Photo: Randy Rizzo
+          </p>
         </div>
 
         <Container className="absolute inset-0 flex flex-col justify-center pb-16 pt-16">
@@ -173,6 +176,9 @@ export default function AboutPage() {
                 sizes="(min-width: 1024px) 400px, 100vw"
                 className="object-cover object-[90%_center]"
               />
+              <p className="absolute bottom-3 right-3 rounded-full bg-ink/60 px-2.5 py-1 text-[11px] text-paper/70 backdrop-blur-sm">
+                Photo: Cedric Letsch
+              </p>
             </div>
 
             <div>
