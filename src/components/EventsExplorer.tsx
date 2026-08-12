@@ -37,7 +37,7 @@ export function EventsExplorer({ events }: { events: AiPortlandEvent[] }) {
   return (
     <>
       {types.length > 0 && (
-        <div className="flex w-full flex-wrap items-center gap-3 border-b border-paper/10 bg-surface px-6 py-5 sm:px-10">
+        <div className="flex w-full flex-wrap items-center gap-3 bg-surface px-6 py-5 sm:px-10">
           <button
             type="button"
             onClick={() => setType(null)}
@@ -66,8 +66,8 @@ export function EventsExplorer({ events }: { events: AiPortlandEvent[] }) {
         </div>
       )}
 
-      <div className="mx-auto max-w-5xl px-6 py-12 sm:px-10">
-        <div className="mb-6 flex w-fit items-center gap-1 rounded-full bg-[#2c2c2e] p-1">
+      <div className="mx-auto max-w-5xl px-6 py-6 sm:px-10">
+        <div className="mb-4 flex w-fit items-center gap-1 rounded-full bg-[#2c2c2e] p-1">
           <button
             type="button"
             onClick={() => setView("upcoming")}
@@ -89,7 +89,7 @@ export function EventsExplorer({ events }: { events: AiPortlandEvent[] }) {
         </div>
 
         {filtered.length > 0 ? (
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-3">
             {filtered.map((event) => (
               <EventCard key={event.id} event={event} showRsvp={view === "upcoming"} />
             ))}

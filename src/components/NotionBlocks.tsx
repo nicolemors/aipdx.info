@@ -18,6 +18,7 @@ function RichText({ richText }: { richText: RichTextItemResponse[] }) {
         if (segment.annotations.bold) node = <strong key="bold">{node}</strong>;
         if (segment.annotations.italic) node = <em key="italic">{node}</em>;
         if (segment.annotations.strikethrough) node = <s key="strike">{node}</s>;
+
         const href = segment.type === "text" ? segment.text.link?.url : undefined;
         if (href) {
           node = (
@@ -31,7 +32,32 @@ function RichText({ richText }: { richText: RichTextItemResponse[] }) {
               {node}
             </a>
           );
+        } else if (segment.type === "text" && segment.plain_text.includes("Idealist Consulting")) {
+          const target = "Idealist Consulting";
+          const text = segment.plain_text;
+          const matchIndex = text.toLowerCase().indexOf(target.toLowerCase());
+
+          if (matchIndex >= 0) {
+            const before = text.slice(0, matchIndex);
+            const match = text.slice(matchIndex, matchIndex + target.length);
+            const after = text.slice(matchIndex + target.length);
+            node = (
+              <>
+                {before}
+                <a
+                  href="https://idealistconsulting.com/"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-pink underline decoration-pink/40 underline-offset-2 hover:decoration-pink"
+                >
+                  {match}
+                </a>
+                {after}
+              </>
+            );
+          }
         }
+
         return <span key={i}>{node}</span>;
       })}
     </>
@@ -137,12 +163,36 @@ function Block({ block, inColumn = false }: { block: BlockWithChildren; inColumn
         );
       }
 
-      // A standalone image (e.g. a sponsor logo) shouldn't be force-cropped
-      // to a 16:9 photo frame — show it uncropped, at a modest size.
+      // A logo (e.g. a partner mention embedded in a story) shouldn't be
+      // force-cropped like a photo — contain it in a small white card,
+      // matching the treatment partner/sponsor logos get elsewhere on the
+      // site, and link it out like those do too.
+      if (src.includes("IC_FullMark_Horizontal_FullColor.png")) {
+        return (
+          <figure className="mx-auto flex w-fit flex-col items-center gap-2">
+            <a href="https://idealistconsulting.com/" target="_blank" rel="noreferrer">
+              <div className="flex h-24 w-56 items-center justify-center rounded-xl bg-paper p-4">
+                <div className="relative h-full w-full">
+                  <Image src={src} alt="Idealist Consulting" fill sizes="224px" className="object-contain" />
+                </div>
+              </div>
+            </a>
+            {caption && (
+              <figcaption className="text-center text-sm text-muted">
+                <RichText richText={caption} />
+              </figcaption>
+            )}
+          </figure>
+        );
+      }
+
+      // Standalone photo — same rounded-2xl/object-cover treatment as an
+      // in-column image, just not confined to half a row. Capped at half
+      // the prose width rather than filling it, and centered over its caption.
       return (
-        <figure className="flex flex-col items-center gap-2">
-          <div className="relative aspect-[2/1] w-full max-w-xs">
-            <Image src={src} alt="" fill sizes="320px" className="object-contain" />
+        <figure className="mx-auto flex max-w-[320px] flex-col items-center gap-2">
+          <div className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl">
+            <Image src={src} alt="" fill sizes="320px" className="object-cover" />
           </div>
           {caption && (
             <figcaption className="text-center text-sm text-muted">

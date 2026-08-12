@@ -13,6 +13,7 @@ const LOGO_SCALE: Record<string, number> = {
   "Rose City Techies": 1.4,
   "Good Collab AI": 1.4,
   "Graybox": 1.4,
+  "Idealist Consulting": 0.75,
 };
 
 // Manual dark-card override for logos whose corners are transparent (so
@@ -45,23 +46,26 @@ export function PartnerGrid({ partners }: { partners: Partner[] }) {
         const scale = LOGO_SCALE[name] ?? 1;
         const bgColor = CARD_BG_OVERRIDE[name] ?? partner.cardColor;
         const content = partner.logoUrl ? (
-          <div
-            className={`flex h-24 w-56 items-center justify-center rounded-xl p-4 ${bgColor ? "" : "bg-paper"}`}
-            style={bgColor ? { backgroundColor: bgColor } : undefined}
-          >
+          <div className="flex flex-col items-center gap-2">
             <div
-              className="relative h-full w-full"
-              style={scale !== 1 ? { transform: `scale(${scale})` } : undefined}
+              className={`flex h-24 w-56 items-center justify-center rounded-xl p-4 ${bgColor ? "" : "bg-paper"}`}
+              style={bgColor ? { backgroundColor: bgColor } : undefined}
             >
-              <Image src={partner.logoUrl} alt={partner.name} fill sizes="224px" className="object-contain" />
+              <div
+                className="relative h-full w-full"
+                style={scale !== 1 ? { transform: `scale(${scale})` } : undefined}
+              >
+                <Image src={partner.logoUrl} alt={partner.name} fill sizes="224px" className="object-contain" />
+              </div>
             </div>
+            <span className="text-sm font-medium text-paper/70">{partner.name}</span>
           </div>
         ) : (
           <span className="text-sm font-medium text-paper/70 hover:text-paper">{partner.name}</span>
         );
 
         return partner.link ? (
-          <a key={partner.id} href={partner.link} target="_blank" rel="noreferrer" aria-label={partner.name}>
+          <a key={partner.id} href={partner.link} target="_blank" rel="noreferrer">
             {content}
           </a>
         ) : (

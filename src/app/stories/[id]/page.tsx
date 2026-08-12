@@ -169,7 +169,12 @@ export default async function StoryDetailPage({ params }: Props) {
                       alt=""
                       fill
                       sizes="(min-width: 1024px) 11vw, (min-width: 640px) 16vw, 33vw"
-                      className="object-cover transition hover:scale-[1.03]"
+                      className={`object-cover transition hover:scale-[1.03] ${
+                        // Tall portrait photo, cover-cropped to a wide 16:10 tile
+                        // — default center crop cuts off the left person's head,
+                        // so bias the crop upward to keep both faces in frame.
+                        url.includes("good-3.jpeg") ? "object-[center_19%]" : ""
+                      }`}
                     />
                   </div>
                 </a>
