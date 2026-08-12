@@ -88,6 +88,25 @@ function Block({ block }: { block: BlockObjectResponse }) {
           <RichText richText={block.quote.rich_text} />
         </blockquote>
       );
+    case "callout": {
+      // Deliberately ignores Notion's own `color` field — callouts should
+      // look like the rest of the site (pink accent, surface card), not
+      // whatever background color an editor happened to pick in Notion.
+      const icon = block.callout.icon;
+      const emoji = icon?.type === "emoji" ? icon.emoji : null;
+      return (
+        <div className="flex gap-4 rounded-2xl border border-pink/30 bg-surface p-6">
+          {emoji && (
+            <span aria-hidden className="text-2xl leading-none">
+              {emoji}
+            </span>
+          )}
+          <p className="leading-relaxed text-paper/80">
+            <RichText richText={block.callout.rich_text} />
+          </p>
+        </div>
+      );
+    }
     case "code":
       return (
         <pre className="overflow-x-auto rounded-xl bg-black/40 p-4 text-sm text-paper/80">
