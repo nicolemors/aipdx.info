@@ -112,4 +112,18 @@ export async function getNextEvent(): Promise<AiPortlandEvent | null> {
   return next ?? null;
 }
 
+/** The next "AI in the A.M." coffee hour, AI Portland's recurring morning meetup. */
+export async function getNextCoffeeHour(): Promise<AiPortlandEvent | null> {
+  const upcoming = await getUpcomingEvents();
+  return upcoming.find((event) => event.name.toLowerCase().includes("ai in the a.m.")) ?? null;
+}
+
+/** The next December social/happy hour, if one is upcoming. */
+export async function getDecemberSocial(): Promise<AiPortlandEvent | null> {
+  const upcoming = await getUpcomingEvents();
+  return (
+    upcoming.find((event) => event.type === "Social" && parseEventDate(event.date).getMonth() === 11) ?? null
+  );
+}
+
 export const isEventsConfigured = Boolean(process.env.NOTION_TOKEN && databaseId);

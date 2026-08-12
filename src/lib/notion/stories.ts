@@ -1,6 +1,15 @@
 import { isFullUser } from "@notionhq/client";
-import type { BlockObjectResponse, PageObjectResponse } from "@notionhq/client/build/src/api-endpoints";
-import { allFileUrls, firstFileUrl, getBlockChildren, getPageById, plainText, queryAllPages } from "./client";
+import type { PageObjectResponse } from "@notionhq/client/build/src/api-endpoints";
+import type { BlockWithChildren } from "./client";
+import {
+  allFileUrls,
+  firstFileUrl,
+  getBlockChildren,
+  getBlockChildrenRecursive,
+  getPageById,
+  plainText,
+  queryAllPages,
+} from "./client";
 
 export type RelatedEvent = {
   id: string;
@@ -114,12 +123,12 @@ export async function getStoryById(id: string): Promise<Story | null> {
   return page ? toStory(page) : null;
 }
 
-/** The page content blocks that make up a story's body. */
-export async function getStoryBody(id: string): Promise<BlockObjectResponse[]> {
-  return getBlockChildren(id);
+/** The page content blocks that make up a story's body, including nested content (columns, callouts). */
+export async function getStoryBody(id: string): Promise<BlockWithChildren[]> {
+  return getBlockChildrenRecursive(id);
 }
 
-function blockRichText(block: BlockObjectResponse) {
+function blockRichText(block: BlockWithChildren) {
   switch (block.type) {
     case "paragraph":
       return block.paragraph.rich_text;
@@ -131,6 +140,8 @@ function blockRichText(block: BlockObjectResponse) {
       return block.heading_3.rich_text;
     case "quote":
       return block.quote.rich_text;
+    case "callout":
+      return block.callout.rich_text;
     case "bulleted_list_item":
       return block.bulleted_list_item.rich_text;
     case "numbered_list_item":
@@ -140,13 +151,18 @@ function blockRichText(block: BlockObjectResponse) {
   }
 }
 
-/** Reading time estimated from the real word count of a story's body blocks (~200 wpm), not a fabricated figure. */
-export function estimateReadingMinutes(blocks: BlockObjectResponse[]): number {
-  const wordCount = blocks.reduce((total, block) => {
+function countWords(blocks: BlockWithChildren[]): number {
+  return blocks.reduce((total, block) => {
     const text = plainText(blockRichText(block)) ?? "";
-    return total + (text.trim() ? text.trim().split(/\s+/).length : 0);
+    const ownCount = text.trim() ? text.trim().split(/\s+/).length : 0;
+    const childCount = block.children ? countWords(block.children) : 0;
+    return total + ownCount + childCount;
   }, 0);
-  return Math.max(1, Math.round(wordCount / 200));
+}
+
+/** Reading time estimated from the real word count of a story's body blocks (~200 wpm), including nested content (columns, callouts), not a fabricated figure. */
+export function estimateReadingMinutes(blocks: BlockWithChildren[]): number {
+  return Math.max(1, Math.round(countWords(blocks) / 200));
 }
 
 /**

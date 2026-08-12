@@ -1,11 +1,13 @@
-import type { BlockObjectResponse, RichTextItemResponse } from "@notionhq/client/build/src/api-endpoints";
+import type { RichTextItemResponse } from "@notionhq/client/build/src/api-endpoints";
 import Image from "next/image";
+import type { BlockWithChildren } from "@/lib/notion/client";
 
 // Minimal renderer covering the block types AI Portland's Stories content
-// actually uses (text, headings, lists, images, quotes, code, dividers).
-// Nested/children blocks (e.g. a list item with a sub-list) are not
-// rendered — flagging this as a judgment call, not a spec requirement,
-// since recap posts are expected to be simple prose + images.
+// actually uses (text, headings, lists, images, quotes, callouts, code,
+// dividers, side-by-side columns). Deliberately restyles everything to the
+// site's own visual language (pink accent, surface cards) rather than
+// mirroring Notion's own colors/icons, so content built in Notion looks
+// native to the site regardless of what an editor picks there.
 
 function RichText({ richText }: { richText: RichTextItemResponse[] }) {
   return (
@@ -36,8 +38,8 @@ function RichText({ richText }: { richText: RichTextItemResponse[] }) {
   );
 }
 
-function groupListItems(blocks: BlockObjectResponse[]) {
-  const groups: (BlockObjectResponse | BlockObjectResponse[])[] = [];
+function groupListItems(blocks: BlockWithChildren[]) {
+  const groups: (BlockWithChildren | BlockWithChildren[])[] = [];
   for (const block of blocks) {
     const last = groups[groups.length - 1];
     if (
@@ -55,7 +57,7 @@ function groupListItems(blocks: BlockObjectResponse[]) {
   return groups;
 }
 
-function Block({ block }: { block: BlockObjectResponse }) {
+function Block({ block, inColumn = false }: { block: BlockWithChildren; inColumn?: boolean }) {
   switch (block.type) {
     case "paragraph":
       if (block.paragraph.rich_text.length === 0) return null;
@@ -89,21 +91,18 @@ function Block({ block }: { block: BlockObjectResponse }) {
         </blockquote>
       );
     case "callout": {
-      // Deliberately ignores Notion's own `color` field — callouts should
-      // look like the rest of the site (pink accent, surface card), not
-      // whatever background color an editor happened to pick in Notion.
-      const icon = block.callout.icon;
-      const emoji = icon?.type === "emoji" ? icon.emoji : null;
+      // Deliberately ignores Notion's own `color` and `icon` fields —
+      // callouts should look like the rest of the site (pink accent, surface
+      // card), not whatever color/emoji an editor happened to pick in Notion.
+      const children = block.children ?? [];
       return (
-        <div className="flex gap-4 rounded-2xl border border-pink/30 bg-surface p-6">
-          {emoji && (
-            <span aria-hidden className="text-2xl leading-none">
-              {emoji}
-            </span>
-          )}
+        <div className="space-y-2 rounded-2xl border border-pink/30 bg-surface p-6">
           <p className="leading-relaxed text-paper/80">
             <RichText richText={block.callout.rich_text} />
           </p>
+          {children.map((child) => (
+            <Block key={child.id} block={child} />
+          ))}
         </div>
       );
     }
@@ -120,17 +119,47 @@ function Block({ block }: { block: BlockObjectResponse }) {
     case "image": {
       const src = block.image.type === "external" ? block.image.external.url : block.image.file.url;
       const caption = block.image.caption.length > 0 ? block.image.caption : undefined;
+
+      // Inside a column, an image is a photo meant to fill its half of the
+      // layout — crop it to fill like the rest of the site's photo cards.
+      if (inColumn) {
+        return (
+          <figure>
+            <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl">
+              <Image src={src} alt="" fill sizes="(min-width: 640px) 350px, 100vw" className="object-cover" />
+            </div>
+            {caption && (
+              <figcaption className="mt-2 text-center text-sm text-muted">
+                <RichText richText={caption} />
+              </figcaption>
+            )}
+          </figure>
+        );
+      }
+
+      // A standalone image (e.g. a sponsor logo) shouldn't be force-cropped
+      // to a 16:9 photo frame — show it uncropped, at a modest size.
       return (
-        <figure>
-          <div className="relative aspect-[16/9] w-full overflow-hidden rounded-2xl">
-            <Image src={src} alt="" fill sizes="(min-width: 768px) 700px, 100vw" className="object-cover" />
+        <figure className="flex flex-col items-center gap-2">
+          <div className="relative aspect-[2/1] w-full max-w-xs">
+            <Image src={src} alt="" fill sizes="320px" className="object-contain" />
           </div>
           {caption && (
-            <figcaption className="mt-2 text-center text-sm text-muted">
+            <figcaption className="text-center text-sm text-muted">
               <RichText richText={caption} />
             </figcaption>
           )}
         </figure>
+      );
+    }
+    case "column_list": {
+      const columns = block.children ?? [];
+      return (
+        <div className={`grid gap-8 sm:items-center ${columns.length > 1 ? "sm:grid-cols-2" : ""}`}>
+          {columns.map((column) => (
+            <NotionBlocks key={column.id} blocks={column.children ?? []} inColumn />
+          ))}
+        </div>
       );
     }
     default:
@@ -138,7 +167,7 @@ function Block({ block }: { block: BlockObjectResponse }) {
   }
 }
 
-export function NotionBlocks({ blocks }: { blocks: BlockObjectResponse[] }) {
+export function NotionBlocks({ blocks, inColumn = false }: { blocks: BlockWithChildren[]; inColumn?: boolean }) {
   const groups = groupListItems(blocks);
 
   return (
@@ -164,7 +193,7 @@ export function NotionBlocks({ blocks }: { blocks: BlockObjectResponse[] }) {
             </ListTag>
           );
         }
-        return <Block key={group.id} block={group} />;
+        return <Block key={group.id} block={group} inColumn={inColumn} />;
       })}
     </div>
   );

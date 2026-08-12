@@ -3,8 +3,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Container } from "@/components/Container";
+import { EventCard } from "@/components/EventCard";
 import { NotionBlocks } from "@/components/NotionBlocks";
 import { PodcastEmbed } from "@/components/PodcastEmbed";
+import { getDecemberSocial, getNextCoffeeHour } from "@/lib/notion/events";
 import {
   estimateReadingMinutes,
   getAllStories,
@@ -44,9 +46,11 @@ export default async function StoryDetailPage({ params }: Props) {
   const story = await getStoryById(id);
   if (!story) notFound();
 
-  const [blocks, relatedEvent] = await Promise.all([
+  const [blocks, relatedEvent, nextCoffeeHour, decemberSocial] = await Promise.all([
     getStoryBody(story.id),
     story.relatedEventId ? getRelatedEventName(story.relatedEventId) : Promise.resolve(null),
+    getNextCoffeeHour(),
+    getDecemberSocial(),
   ]);
 
   const podcastVideoId = story.podcastUrl ? getYoutubeVideoId(story.podcastUrl) : null;
@@ -139,6 +143,18 @@ export default async function StoryDetailPage({ params }: Props) {
           <NotionBlocks blocks={blocks} />
         </Container>
       </section>
+
+      {(nextCoffeeHour || decemberSocial) && (
+        <section className="border-t border-paper/10 py-16">
+          <Container className="max-w-3xl">
+            <h2 className="text-3xl font-extrabold tracking-tight text-paper">Come Hang Out With Us</h2>
+            <div className="mt-6 flex flex-col gap-6">
+              {nextCoffeeHour && <EventCard event={nextCoffeeHour} />}
+              {decemberSocial && <EventCard event={decemberSocial} />}
+            </div>
+          </Container>
+        </section>
+      )}
 
       {story.galleryImageUrls.length > 0 && (
         <section className="border-t border-paper/10 py-16">

@@ -114,3 +114,25 @@ export async function getBlockChildren(blockId: string): Promise<BlockObjectResp
 
   return blocks;
 }
+
+export type BlockWithChildren = BlockObjectResponse & { children?: BlockWithChildren[] };
+
+// child_page/child_database point at separate pages/databases, not nested
+// layout content — recursing into those would pull in unrelated pages.
+const noRecurseTypes = new Set(["child_page", "child_database"]);
+
+/**
+ * Like getBlockChildren, but resolves nested children too (e.g. a
+ * column_list's columns, or a callout's follow-on paragraphs), so layout
+ * built with Notion's columns/toggles/callouts round-trips into the site.
+ */
+export async function getBlockChildrenRecursive(blockId: string): Promise<BlockWithChildren[]> {
+  const blocks = await getBlockChildren(blockId);
+  return Promise.all(
+    blocks.map(async (block): Promise<BlockWithChildren> => {
+      if (!block.has_children || noRecurseTypes.has(block.type)) return block;
+      const children = await getBlockChildrenRecursive(block.id);
+      return { ...block, children };
+    })
+  );
+}
