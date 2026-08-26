@@ -31,6 +31,15 @@ const nextConfig: NextConfig = {
     // fallback, YouTube thumbnails, and Google avatars all also come through
     // this same wildcard.
     remotePatterns: [{ protocol: "https", hostname: "**" }],
+    // Notion's own uploaded files (Feature Image, Gallery, Logo, body
+    // images — the prod-files-secure.s3... URLs) are pre-signed and expire
+    // after ~1 hour. Once the optimizer successfully fetches one, cache the
+    // optimized result for a year so it's never re-fetched from that
+    // expiring URL again — otherwise a page that goes a while between
+    // visits gets a stale expired URL baked into its cached HTML, and the
+    // very next optimization attempt 403s, showing a broken image until a
+    // revalidation happens to land on a request that fetches a fresh URL.
+    minimumCacheTTL: 31536000,
   },
 };
 
