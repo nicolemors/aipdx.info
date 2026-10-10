@@ -186,13 +186,12 @@ function Block({ block, inColumn = false }: { block: BlockWithChildren; inColumn
         );
       }
 
-      // Standalone photo — same rounded-2xl/object-cover treatment as an
-      // in-column image, just not confined to half a row. Capped at half
-      // the prose width rather than filling it, and centered over its caption.
+      // Standalone photo — let it fill the full available content width rather
+      // than being restricted to a narrow, centered tile.
       return (
-        <figure className="mx-auto flex max-w-[320px] flex-col items-center gap-2">
+        <figure className="flex w-full flex-col items-center gap-2">
           <div className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl">
-            <Image src={src} alt="" fill sizes="320px" className="object-cover" />
+            <Image src={src} alt="" fill sizes="100vw" className="object-cover" />
           </div>
           {caption && (
             <figcaption className="text-center text-sm text-muted">
@@ -204,8 +203,9 @@ function Block({ block, inColumn = false }: { block: BlockWithChildren; inColumn
     }
     case "column_list": {
       const columns = block.children ?? [];
+      const columnClass = columns.length > 2 ? "sm:grid-cols-3" : columns.length > 1 ? "sm:grid-cols-2" : "";
       return (
-        <div className={`grid gap-8 sm:items-center ${columns.length > 1 ? "sm:grid-cols-2" : ""}`}>
+        <div className={`grid gap-8 sm:items-center ${columnClass}`}>
           {columns.map((column) => (
             <NotionBlocks key={column.id} blocks={column.children ?? []} inColumn />
           ))}
