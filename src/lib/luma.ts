@@ -14,7 +14,7 @@ export async function getLumaCoverImage(lumaUrl: string): Promise<string | null>
   try {
     const response = await fetch(
       `https://api.lu.ma/event/get?event_api_id=${encodeURIComponent(slug)}`,
-      { signal: AbortSignal.timeout(5000) }
+      { signal: AbortSignal.timeout(5000), next: { revalidate: 3600 } }
     );
     if (!response.ok) return null;
 

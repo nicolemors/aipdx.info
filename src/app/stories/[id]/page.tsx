@@ -6,13 +6,14 @@ import { Container } from "@/components/Container";
 import { EventCard } from "@/components/EventCard";
 import { NotionBlocks } from "@/components/NotionBlocks";
 import { PodcastEmbed } from "@/components/PodcastEmbed";
-import { getDecemberSocial, getNextCoffeeHour } from "@/lib/notion/events";
+import { getUpcomingEvents } from "@/lib/notion/events";
 import {
   estimateReadingMinutes,
   getAllStories,
   getRelatedEventName,
   getStoryBody,
   getStoryById,
+  storyImageProxyUrl,
 } from "@/lib/notion/stories";
 import { getYoutubeVideoId } from "@/lib/youtube";
 
@@ -46,11 +47,10 @@ export default async function StoryDetailPage({ params }: Props) {
   const story = await getStoryById(id);
   if (!story) notFound();
 
-  const [blocks, relatedEvent, nextCoffeeHour, decemberSocial] = await Promise.all([
+  const [blocks, relatedEvent, upcomingEvents] = await Promise.all([
     getStoryBody(story.id),
     story.relatedEventId ? getRelatedEventName(story.relatedEventId) : Promise.resolve(null),
-    getNextCoffeeHour(),
-    getDecemberSocial(),
+    getUpcomingEvents(2),
   ]);
 
   const podcastVideoId = story.podcastUrl ? getYoutubeVideoId(story.podcastUrl) : null;
@@ -112,7 +112,7 @@ export default async function StoryDetailPage({ params }: Props) {
       {story.coverImageUrl && (
         <Container className="max-w-3xl py-10">
           <div className="relative aspect-[16/9] w-full overflow-hidden rounded-2xl">
-            <Image src={story.coverImageUrl} alt="" fill sizes="768px" className="object-cover" priority />
+            <Image src={storyImageProxyUrl(story, "cover")} alt="" fill sizes="768px" className="object-cover" priority />
           </div>
         </Container>
       )}
@@ -144,13 +144,14 @@ export default async function StoryDetailPage({ params }: Props) {
         </Container>
       </section>
 
-      {(nextCoffeeHour || decemberSocial) && (
+      {upcomingEvents.length > 0 && (
         <section className="border-t border-paper/10 py-16">
           <Container className="max-w-3xl">
             <h2 className="text-3xl font-extrabold tracking-tight text-paper">Come Hang Out With Us</h2>
-            <div className="mt-6 flex flex-col gap-6">
-              {nextCoffeeHour && <EventCard event={nextCoffeeHour} />}
-              {decemberSocial && <EventCard event={decemberSocial} />}
+            <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+              {upcomingEvents.map((event) => (
+                <EventCard key={event.id} event={event} />
+              ))}
             </div>
           </Container>
         </section>
@@ -160,25 +161,28 @@ export default async function StoryDetailPage({ params }: Props) {
         <section className="border-t border-paper/10 py-16">
           <Container>
             <h2 className="text-3xl font-extrabold tracking-tight text-paper">Photo Gallery</h2>
-            <div className="mt-6 grid grid-cols-3 gap-3 sm:grid-cols-6 lg:grid-cols-9">
-              {story.galleryImageUrls.map((url) => (
-                <a key={url} href={url} target="_blank" rel="noreferrer" className="block">
-                  <div className="relative aspect-[16/10] overflow-hidden rounded-xl bg-surface">
-                    <Image
-                      src={url}
-                      alt=""
-                      fill
-                      sizes="(min-width: 1024px) 11vw, (min-width: 640px) 16vw, 33vw"
-                      className={`object-cover transition hover:scale-[1.03] ${
-                        // Tall portrait photo, cover-cropped to a wide 16:10 tile
-                        // — default center crop cuts off the left person's head,
-                        // so bias the crop upward to keep both faces in frame.
-                        url.includes("good-3.jpeg") ? "object-[center_19%]" : ""
-                      }`}
-                    />
-                  </div>
-                </a>
-              ))}
+            <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
+              {story.galleryImageUrls.map((url, index) => {
+                const imageSrc = storyImageProxyUrl(story, index);
+                return (
+                  <a key={url} href={imageSrc} target="_blank" rel="noreferrer" className="block">
+                    <div className="relative aspect-[16/10] overflow-hidden rounded-xl bg-surface">
+                      <Image
+                        src={imageSrc}
+                        alt=""
+                        fill
+                        sizes="(min-width: 1024px) 11vw, (min-width: 640px) 16vw, 33vw"
+                        className={`object-cover transition hover:scale-[1.03] ${
+                          // Tall portrait photo, cover-cropped to a wide 16:10 tile
+                          // — default center crop cuts off the left person's head,
+                          // so bias the crop upward to keep both faces in frame.
+                          url.includes("good-3.jpeg") ? "object-[center_19%]" : ""
+                        }`}
+                      />
+                    </div>
+                  </a>
+                );
+              })}
             </div>
           </Container>
         </section>

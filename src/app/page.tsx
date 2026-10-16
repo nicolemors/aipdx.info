@@ -67,8 +67,8 @@ export default async function HomePage() {
               { src: "/images/gallery/IMG_1275.jpeg", alt: "Attendees seated on bleacher-style steps at an AI Portland event" },
               { src: "/images/gallery/IMG_7102.jpeg", alt: "A panel discussion in front of the AI Portland logo" },
             ].map((image) => (
-              <div key={image.src} className="relative aspect-square w-full overflow-hidden rounded-2xl">
-                <Image src={image.src} alt={image.alt} fill sizes="(min-width: 640px) 33vw, 100vw" className="object-cover" />
+              <div key={image.src} className="relative aspect-[4/5] w-full overflow-hidden rounded-2xl">
+                <Image src={image.src} alt={image.alt} fill sizes="(min-width: 640px) 33vw, 100vw" className="h-full w-full object-cover" />
               </div>
             ))}
           </div>
@@ -106,7 +106,7 @@ export default async function HomePage() {
       <section className="py-20">
         <Container>
           <div className="grid gap-10 lg:grid-cols-[400px_1fr] lg:items-center">
-            <div className="relative aspect-[4/5] w-full overflow-hidden rounded-3xl">
+            <div className="relative mx-auto aspect-[4/5] w-[75%] max-w-[400px] overflow-hidden rounded-3xl">
               <Image
                 src="/images/gallery/IMG_8602.jpeg"
                 alt="Three AI Portland members chatting on a couch"

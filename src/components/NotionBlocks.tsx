@@ -143,7 +143,10 @@ function Block({ block, inColumn = false }: { block: BlockWithChildren; inColumn
     case "divider":
       return <hr className="border-paper/10" />;
     case "image": {
-      const src = block.image.type === "external" ? block.image.external.url : block.image.file.url;
+      const src =
+        block.image.type === "external"
+          ? block.image.external.url
+          : `/api/notion/blocks/${block.id}/image?v=${encodeURIComponent(block.last_edited_time)}`;
       const caption = block.image.caption.length > 0 ? block.image.caption : undefined;
 
       // Inside a column, an image is a photo meant to fill its half of the

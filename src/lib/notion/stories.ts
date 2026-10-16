@@ -29,6 +29,7 @@ export type Story = {
   /** "Intro" rich_text property — a lead paragraph shown above the body, if set. */
   intro: string | null;
   date: string;
+  imageVersion: string;
   coverImageUrl: string | null;
   /** "Gallery" files property — event photos beyond the featured image. */
   galleryImageUrls: string[];
@@ -94,6 +95,7 @@ function toStory(page: PageObjectResponse): Story | null {
     subhead,
     intro,
     date: page.created_time,
+    imageVersion: page.last_edited_time,
     coverImageUrl,
     galleryImageUrls,
     podcastUrl,
@@ -121,6 +123,11 @@ export async function getLatestStory(): Promise<Story | null> {
 export async function getStoryById(id: string): Promise<Story | null> {
   const page = await getPageById(id);
   return page ? toStory(page) : null;
+}
+
+export function storyImageProxyUrl(story: Pick<Story, "id" | "imageVersion">, image: "cover" | number) {
+  const imageKey = typeof image === "number" ? `gallery-${image}` : image;
+  return `/api/stories/${story.id}/images/${imageKey}?v=${encodeURIComponent(story.imageVersion)}`;
 }
 
 /** The page content blocks that make up a story's body, including nested content (columns, callouts). */

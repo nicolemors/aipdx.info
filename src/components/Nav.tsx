@@ -1,15 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { nav } from "@/content/site";
-
-// Matches Figma "Desktop - 2" (on load: full-bleed wordmark, nav row below)
-// collapsing into "Desktop - 3" (on scroll: compact single-row bar) once the
-// user scrolls past the hero. Desktop-only in Figma — mobile gets a single
-// always-compact bar since there's no mobile comp to match.
-const SCROLL_THRESHOLD = 100;
 
 // className must set an explicit width (not max-width) — this sits inside a
 // shrink-to-fit flex Link, so a percentage/max-width alone resolves against

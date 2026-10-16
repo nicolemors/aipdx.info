@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@/components/Container";
-import type { Story } from "@/lib/notion/stories";
+import { storyImageProxyUrl, type Story } from "@/lib/notion/stories";
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
@@ -28,14 +28,14 @@ export function LatestStoryFeature({ story, excerpt }: { story: Story; excerpt: 
           </h2>
         </div>
 
-        <div className="mt-10 grid gap-6 lg:grid-cols-[minmax(0,1fr)_440px]">
+        <div className="mt-10 grid gap-6 lg:grid-cols-2 lg:items-stretch">
           <Link
             href={`/stories/${story.id}`}
             aria-label={story.title}
-            className="relative min-h-[320px] overflow-hidden rounded-[24px] bg-surface lg:min-h-[540px]"
+            className="relative min-h-[320px] w-full overflow-hidden rounded-[24px] bg-surface lg:min-h-[540px]"
           >
             <Image
-              src={story.coverImageUrl ?? "/images/story-fallback.jpg"}
+              src={story.coverImageUrl ? storyImageProxyUrl(story, "cover") : "/images/story-fallback.jpg"}
               alt=""
               fill
               sizes="(min-width: 1024px) 60vw, 100vw"
@@ -43,14 +43,14 @@ export function LatestStoryFeature({ story, excerpt }: { story: Story; excerpt: 
             />
           </Link>
 
-          <div className="flex flex-col justify-center gap-8 rounded-[24px] border border-paper/10 bg-surface p-8 lg:p-10">
-            <div className="flex flex-col gap-4">
+          <div className="flex w-full flex-col justify-center gap-8 rounded-[24px] border border-paper/10 bg-surface p-8 lg:p-10">
+            <div className="flex w-full flex-col gap-4">
               <p className="text-xs font-bold uppercase tracking-[1px] text-pink">Story · {formatDate(story.date)}</p>
-              {excerpt && <p className="leading-7 text-paper/75">{excerpt}</p>}
+              {excerpt && <p className="w-full leading-7 text-paper/75">{excerpt}</p>}
             </div>
             <Link
               href={`/stories/${story.id}`}
-              className="flex items-center gap-2 text-sm font-bold uppercase tracking-[1px] text-pink transition hover:text-paper"
+              className="flex w-full items-center gap-2 text-sm font-bold uppercase tracking-[1px] text-pink transition hover:text-paper"
             >
               Continue reading →
             </Link>

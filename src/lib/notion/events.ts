@@ -84,10 +84,19 @@ async function withImageFallback(event: AiPortlandEvent): Promise<AiPortlandEven
   return imageUrl ? { ...event, imageUrl } : event;
 }
 
+async function withImageFallbacks(events: AiPortlandEvent[]): Promise<AiPortlandEvent[]> {
+  const hydrated: AiPortlandEvent[] = [];
+  for (let index = 0; index < events.length; index += 5) {
+    const batch = events.slice(index, index + 5);
+    hydrated.push(...(await Promise.all(batch.map(withImageFallback))));
+  }
+  return hydrated;
+}
+
 async function queryEvents(direction: "ascending" | "descending"): Promise<AiPortlandEvent[]> {
   const pages = await queryAllPages(databaseId, [{ property: "Date", direction }]);
   const events = pages.map(toEvent).filter((event): event is AiPortlandEvent => event !== null);
-  return Promise.all(events.map(withImageFallback));
+  return withImageFallbacks(events);
 }
 
 /** All events in the public Events database, soonest first. */
