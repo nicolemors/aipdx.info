@@ -18,10 +18,19 @@ export async function GET(_request: Request, { params }: RouteContext) {
     return new Response(null, { status: 404 });
   }
 
-  return new Response(null, {
-    status: 307,
+  const imageResponse = await fetch(imageUrl, {
+    cache: "no-store",
+    signal: AbortSignal.timeout(10_000),
+  });
+  const contentType = imageResponse.headers.get("content-type");
+  if (!imageResponse.ok || !contentType?.startsWith("image/")) {
+    return new Response(null, { status: 502 });
+  }
+
+  return new Response(imageResponse.body, {
+    status: 200,
     headers: {
-      Location: imageUrl,
+      "Content-Type": contentType,
       "Cache-Control": "no-store",
     },
   });

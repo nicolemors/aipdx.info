@@ -21,6 +21,11 @@ const nextConfig: NextConfig = {
     ];
   },
   images: {
+    localPatterns: [
+      { pathname: "/images/**" },
+      { pathname: "/api/stories/**" },
+      { pathname: "/api/notion/blocks/**" },
+    ],
     // Sponsor/partner logos are "external" Notion files — links to whatever
     // domain that org happens to host its own logo on (kiln.com,
     // prosperportland.us, ...). That list can't be known ahead of time, and
