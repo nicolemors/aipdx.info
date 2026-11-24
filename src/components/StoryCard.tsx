@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import { storyImageProxyUrl, type Story } from "@/lib/notion/stories";
+import type { Story } from "@/lib/notion/stories";
+import { isStoredImage } from "@/lib/storedImage";
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
@@ -10,9 +11,10 @@ export function StoryCard({ story }: { story: Story }) {
   return (
     <Link href={`/stories/${story.id}`} className="group block">
       <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl bg-surface">
-        {story.coverImageUrl && (
+        {story.coverImageSrc && (
           <Image
-            src={storyImageProxyUrl(story, "cover")}
+            src={story.coverImageSrc}
+            unoptimized={isStoredImage(story.coverImageSrc)}
             alt=""
             fill
             sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"

@@ -1,5 +1,6 @@
 import { isFullUser } from "@notionhq/client";
 import type { PageObjectResponse } from "@notionhq/client/build/src/api-endpoints";
+import { storeRemoteImage } from "@/lib/imageStore";
 import type { BlockWithChildren } from "./client";
 import {
   allFileUrls,
@@ -33,6 +34,13 @@ export type Story = {
   coverImageUrl: string | null;
   /** "Gallery" files property — event photos beyond the featured image. */
   galleryImageUrls: string[];
+  /**
+   * What to put in <img src> for the cover / each gallery photo: a permanent
+   * resized copy in Vercel Blob once `withStoredImages` has run, otherwise
+   * the live proxy route as a fallback.
+   */
+  coverImageSrc: string | null;
+  galleryImageSrcs: string[];
   /** "Podcast" url property — links to the episode discussing this story, if any. */
   podcastUrl: string | null;
   /** "Person" property — the first assigned author, if any. */
@@ -98,15 +106,41 @@ function toStory(page: PageObjectResponse): Story | null {
     imageVersion: page.last_edited_time,
     coverImageUrl,
     galleryImageUrls,
+    coverImageSrc: coverImageUrl ? storyImageProxyUrl({ id: page.id, imageVersion: page.last_edited_time }, "cover") : null,
+    galleryImageSrcs: galleryImageUrls.map((_, index) =>
+      storyImageProxyUrl({ id: page.id, imageVersion: page.last_edited_time }, index)
+    ),
     podcastUrl,
     author,
     relatedEventId,
   };
 }
 
+/**
+ * Swaps the story's image srcs for permanent Blob copies (see imageStore),
+ * creating them on first use. Gallery photos are only needed on the story's
+ * own page, so listings skip them.
+ */
+export async function withStoredImages(story: Story, { gallery = false } = {}): Promise<Story> {
+  const [coverSrc, gallerySrcs, avatarSrc] = await Promise.all([
+    storeRemoteImage(story.coverImageUrl),
+    gallery ? Promise.all(story.galleryImageUrls.map(storeRemoteImage)) : Promise.resolve([]),
+    storeRemoteImage(story.author?.avatarUrl),
+  ]);
+  return {
+    ...story,
+    author: story.author && { ...story.author, avatarUrl: avatarSrc ?? story.author.avatarUrl },
+    coverImageSrc: coverSrc ?? story.coverImageSrc,
+    galleryImageSrcs: gallery
+      ? story.galleryImageSrcs.map((fallback, index) => gallerySrcs[index] ?? fallback)
+      : story.galleryImageSrcs,
+  };
+}
+
 async function queryStories(direction: "ascending" | "descending"): Promise<Story[]> {
   const pages = await queryAllPages(databaseId, [{ timestamp: "created_time", direction }]);
-  return pages.map(toStory).filter((story): story is Story => story !== null);
+  const stories = pages.map(toStory).filter((story): story is Story => story !== null);
+  return Promise.all(stories.map((story) => withStoredImages(story)));
 }
 
 /** All stories, most recent first. */
@@ -132,7 +166,23 @@ export function storyImageProxyUrl(story: Pick<Story, "id" | "imageVersion">, im
 
 /** The page content blocks that make up a story's body, including nested content (columns, callouts). */
 export async function getStoryBody(id: string): Promise<BlockWithChildren[]> {
-  return getBlockChildrenRecursive(id);
+  return withStoredBlockImages(await getBlockChildrenRecursive(id));
+}
+
+/** Attaches a permanent Blob copy to every image block, at any nesting depth. */
+async function withStoredBlockImages(blocks: BlockWithChildren[]): Promise<BlockWithChildren[]> {
+  return Promise.all(
+    blocks.map(async (block): Promise<BlockWithChildren> => {
+      const children = block.children ? await withStoredBlockImages(block.children) : undefined;
+      const storedImageSrc =
+        block.type === "image"
+          ? (await storeRemoteImage(
+              block.image.type === "file" ? block.image.file.url : block.image.external.url
+            )) ?? undefined
+          : undefined;
+      return { ...block, children, storedImageSrc };
+    })
+  );
 }
 
 function blockRichText(block: BlockWithChildren) {

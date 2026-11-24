@@ -13,8 +13,9 @@ import {
   getRelatedEventName,
   getStoryBody,
   getStoryById,
-  storyImageProxyUrl,
+  withStoredImages,
 } from "@/lib/notion/stories";
+import { isStoredImage } from "@/lib/storedImage";
 import { getYoutubeVideoId } from "@/lib/youtube";
 
 export const revalidate = 300;
@@ -44,12 +45,13 @@ function formatDate(iso: string) {
 // "Subhead" / "Intro" properties), not placeholders.
 export default async function StoryDetailPage({ params }: Props) {
   const { id } = await params;
-  const story = await getStoryById(id);
-  if (!story) notFound();
+  const notionStory = await getStoryById(id);
+  if (!notionStory) notFound();
 
-  const [blocks, relatedEvent, upcomingEvents] = await Promise.all([
-    getStoryBody(story.id),
-    story.relatedEventId ? getRelatedEventName(story.relatedEventId) : Promise.resolve(null),
+  const [story, blocks, relatedEvent, upcomingEvents] = await Promise.all([
+    withStoredImages(notionStory, { gallery: true }),
+    getStoryBody(notionStory.id),
+    notionStory.relatedEventId ? getRelatedEventName(notionStory.relatedEventId) : Promise.resolve(null),
     getUpcomingEvents(2),
   ]);
 
@@ -86,7 +88,14 @@ export default async function StoryDetailPage({ params }: Props) {
               <span className="flex items-center gap-2">
                 {story.author.avatarUrl && (
                   <span className="relative size-7 overflow-hidden rounded-full">
-                    <Image src={story.author.avatarUrl} alt="" fill className="object-cover" />
+                    <Image
+                      src={story.author.avatarUrl}
+                      unoptimized={isStoredImage(story.author.avatarUrl)}
+                      alt=""
+                      fill
+                      sizes="28px"
+                      className="object-cover"
+                    />
                   </span>
                 )}
                 <span className="font-semibold text-paper">by {story.author.name}</span>
@@ -109,10 +118,18 @@ export default async function StoryDetailPage({ params }: Props) {
         </Container>
       </section>
 
-      {story.coverImageUrl && (
+      {story.coverImageSrc && (
         <Container className="max-w-3xl py-10">
           <div className="relative aspect-[16/9] w-full overflow-hidden rounded-2xl">
-            <Image src={storyImageProxyUrl(story, "cover")} alt="" fill sizes="768px" className="object-cover" priority />
+            <Image
+              src={story.coverImageSrc}
+              unoptimized={isStoredImage(story.coverImageSrc)}
+              alt=""
+              fill
+              sizes="768px"
+              className="object-cover"
+              priority
+            />
           </div>
         </Container>
       )}
@@ -163,12 +180,13 @@ export default async function StoryDetailPage({ params }: Props) {
             <h2 className="text-3xl font-extrabold tracking-tight text-paper">Photo Gallery</h2>
             <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
               {story.galleryImageUrls.map((url, index) => {
-                const imageSrc = storyImageProxyUrl(story, index);
+                const imageSrc = story.galleryImageSrcs[index];
                 return (
                   <a key={url} href={imageSrc} target="_blank" rel="noreferrer" className="block">
                     <div className="relative aspect-[16/10] overflow-hidden rounded-xl bg-surface">
                       <Image
                         src={imageSrc}
+                        unoptimized={isStoredImage(imageSrc)}
                         alt=""
                         fill
                         sizes="(min-width: 1024px) 11vw, (min-width: 640px) 16vw, 33vw"

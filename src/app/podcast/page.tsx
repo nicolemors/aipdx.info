@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { Container } from "@/components/Container";
 import { PodcastEmbed } from "@/components/PodcastEmbed";
+import { storeRemoteImage } from "@/lib/imageStore";
+import { isStoredImage } from "@/lib/storedImage";
 import { getRecentYoutubeVideos } from "@/lib/youtube";
 import { links, podcast } from "@/content/site";
 
@@ -29,8 +31,14 @@ function formatDuration(duration: string | null) {
 // from the channel (see lib/youtube.ts), not fabricated to match the comp's
 // placeholder copy.
 export default async function PodcastPage() {
-  const videos = await getRecentYoutubeVideos(links.podcastYoutube, 4);
-  const [featured, ...recent] = videos;
+  const [featured, ...recentFromYoutube] = await getRecentYoutubeVideos(links.podcastYoutube, 4);
+  // The featured episode is an embed; only the recent-episode cards show thumbnails.
+  const recent = await Promise.all(
+    recentFromYoutube.map(async (video) => ({
+      ...video,
+      thumbnailUrl: (await storeRemoteImage(video.thumbnailUrl)) ?? video.thumbnailUrl,
+    }))
+  );
 
   return (
     <>
@@ -85,7 +93,14 @@ export default async function PodcastPage() {
                   className="overflow-hidden rounded-xl border border-paper/10 bg-ink transition hover:border-pink/40"
                 >
                   <div className="relative aspect-video w-full">
-                    <Image src={video.thumbnailUrl} alt="" fill sizes="(min-width: 640px) 33vw, 100vw" className="object-cover" />
+                    <Image
+                      src={video.thumbnailUrl}
+                      unoptimized={isStoredImage(video.thumbnailUrl)}
+                      alt=""
+                      fill
+                      sizes="(min-width: 640px) 33vw, 100vw"
+                      className="object-cover"
+                    />
                   </div>
                   <div className="flex flex-col gap-2 p-4">
                     <div className="flex items-center gap-2 text-xs">

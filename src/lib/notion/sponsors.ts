@@ -1,4 +1,5 @@
 import type { PageObjectResponse } from "@notionhq/client/build/src/api-endpoints";
+import { storeRemoteImage } from "@/lib/imageStore";
 import { detectCardColor } from "./cardColor";
 import { firstFileUrl, plainText, queryAllPages } from "./client";
 
@@ -38,10 +39,14 @@ export async function getSponsors(): Promise<Sponsor[]> {
   const base = pages.map(toSponsor).filter((sponsor): sponsor is Omit<Sponsor, "cardColor"> => sponsor !== null);
 
   return Promise.all(
-    base.map(async (sponsor) => ({
-      ...sponsor,
-      cardColor: await detectCardColor(sponsor.logoUrl),
-    }))
+    base.map(async (sponsor) => {
+      // Notion-uploaded logos expire after ~1h — swap in a permanent Blob copy.
+      const [storedLogoUrl, cardColor] = await Promise.all([
+        storeRemoteImage(sponsor.logoUrl),
+        detectCardColor(sponsor.logoUrl),
+      ]);
+      return { ...sponsor, logoUrl: storedLogoUrl ?? sponsor.logoUrl, cardColor };
+    })
   );
 }
 

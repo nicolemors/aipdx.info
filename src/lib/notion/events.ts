@@ -1,34 +1,12 @@
 import type { PageObjectResponse } from "@notionhq/client/build/src/api-endpoints";
+import { storeRemoteImage } from "@/lib/imageStore";
 import { getLumaCoverImage } from "@/lib/luma";
 import { firstFileUrl, plainText, queryAllPages } from "./client";
+import { parseEventDate, type AiPortlandEvent } from "./eventTypes";
 
-export type AiPortlandEvent = {
-  id: string;
-  name: string;
-  date: string;
-  dateEnd: string | null;
-  time: string | null;
-  location: string | null;
-  description: string | null;
-  lumaUrl: string | null;
-  /** "Type" rich_text property — e.g. "Panel", "Workshop", "Social". */
-  type: string | null;
-  /** Notion's "Image" property, falling back to the event's Luma cover photo. */
-  imageUrl: string | null;
-};
+export { parseEventDate, type AiPortlandEvent };
 
 const databaseId = process.env.NOTION_EVENTS_DB_ID;
-
-/**
- * Notion's date-only values ("2026-07-17", no time/timezone) get parsed by
- * `new Date(...)` as UTC midnight, which shifts a day earlier once rendered
- * in any timezone behind UTC (e.g. 2026-07-17 -> "July 16" in Pacific time).
- * Reading the Y/M/D components directly as local values sidesteps that.
- */
-export function parseEventDate(dateStr: string): Date {
-  const [year, month, day] = dateStr.slice(0, 10).split("-").map(Number);
-  return new Date(year, month - 1, day);
-}
 
 function toEvent(page: PageObjectResponse): AiPortlandEvent | null {
   const props = page.properties;
@@ -77,11 +55,17 @@ function toEvent(page: PageObjectResponse): AiPortlandEvent | null {
   };
 }
 
-/** Fills in `imageUrl` from the event's Luma cover photo when Notion has no "Image" set. */
+/**
+ * Fills in `imageUrl` from the event's Luma cover photo when Notion has no
+ * "Image" set, then swaps it for a permanent resized copy in Vercel Blob (see
+ * imageStore) — Notion's uploaded-file URLs expire after ~1 hour.
+ */
 async function withImageFallback(event: AiPortlandEvent): Promise<AiPortlandEvent> {
-  if (event.imageUrl || !event.lumaUrl) return event;
-  const imageUrl = await getLumaCoverImage(event.lumaUrl);
-  return imageUrl ? { ...event, imageUrl } : event;
+  const sourceUrl =
+    event.imageUrl ?? (event.lumaUrl ? await getLumaCoverImage(event.lumaUrl) : null);
+  if (!sourceUrl) return event;
+  const storedUrl = await storeRemoteImage(sourceUrl);
+  return { ...event, imageUrl: storedUrl ?? sourceUrl };
 }
 
 async function withImageFallbacks(events: AiPortlandEvent[]): Promise<AiPortlandEvent[]> {

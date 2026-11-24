@@ -115,7 +115,11 @@ export async function getBlockChildren(blockId: string): Promise<BlockObjectResp
   return blocks;
 }
 
-export type BlockWithChildren = BlockObjectResponse & { children?: BlockWithChildren[] };
+export type BlockWithChildren = BlockObjectResponse & {
+  children?: BlockWithChildren[];
+  /** For image blocks: a permanent resized copy in Vercel Blob, when one could be made. */
+  storedImageSrc?: string;
+};
 
 // child_page/child_database point at separate pages/databases, not nested
 // layout content — recursing into those would pull in unrelated pages.

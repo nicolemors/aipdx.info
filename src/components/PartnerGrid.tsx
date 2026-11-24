@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { isStoredImage } from "@/lib/storedImage";
 import type { Partner } from "@/lib/notion/partners";
 
 // One-off size correction for logos whose source files have a lot of
@@ -55,7 +56,14 @@ export function PartnerGrid({ partners }: { partners: Partner[] }) {
                 className="relative h-full w-full"
                 style={scale !== 1 ? { transform: `scale(${scale})` } : undefined}
               >
-                <Image src={partner.logoUrl} alt={partner.name} fill sizes="224px" className="object-contain" />
+                <Image
+                  src={partner.logoUrl}
+                  unoptimized={isStoredImage(partner.logoUrl)}
+                  alt={partner.name}
+                  fill
+                  sizes="224px"
+                  className="object-contain"
+                />
               </div>
             </div>
             <span className="text-sm font-medium text-paper/70">{partner.name}</span>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { parseEventDate, type AiPortlandEvent } from "@/lib/notion/events";
+import { parseEventDate, type AiPortlandEvent } from "@/lib/notion/eventTypes";
 import { EventCard } from "@/components/EventCard";
 
 export function EventsExplorer({ events }: { events: AiPortlandEvent[] }) {

@@ -1,7 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@/components/Container";
-import { storyImageProxyUrl, type Story } from "@/lib/notion/stories";
+import type { Story } from "@/lib/notion/stories";
+import { isStoredImage } from "@/lib/storedImage";
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
@@ -35,7 +36,8 @@ export function LatestStoryFeature({ story, excerpt }: { story: Story; excerpt: 
             className="relative min-h-[320px] w-full overflow-hidden rounded-[24px] bg-surface lg:min-h-[540px]"
           >
             <Image
-              src={story.coverImageUrl ? storyImageProxyUrl(story, "cover") : "/images/story-fallback.jpg"}
+              src={story.coverImageSrc ?? "/images/story-fallback.jpg"}
+              unoptimized={story.coverImageSrc ? isStoredImage(story.coverImageSrc) : false}
               alt=""
               fill
               sizes="(min-width: 1024px) 60vw, 100vw"

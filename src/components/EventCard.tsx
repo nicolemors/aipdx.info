@@ -1,5 +1,6 @@
 import Image from "next/image";
-import { parseEventDate, type AiPortlandEvent } from "@/lib/notion/events";
+import { isStoredImage } from "@/lib/storedImage";
+import { parseEventDate, type AiPortlandEvent } from "@/lib/notion/eventTypes";
 
 function formatCardDate(event: AiPortlandEvent) {
   const date = parseEventDate(event.date)
@@ -19,7 +20,14 @@ export function EventCard({
     <article className="flex w-full overflow-hidden rounded-2xl border border-pink bg-gradient-to-r from-[#2a1822] to-surface">
       {event.imageUrl && (
         <div className="relative hidden size-[130px] shrink-0 sm:block">
-          <Image src={event.imageUrl} alt="" fill sizes="130px" className="object-cover" />
+          <Image
+            src={event.imageUrl}
+            unoptimized={isStoredImage(event.imageUrl)}
+            alt=""
+            fill
+            sizes="130px"
+            className="object-cover"
+          />
         </div>
       )}
 
