@@ -3,7 +3,6 @@ import Image from "next/image";
 import { Container } from "@/components/Container";
 import { PodcastEmbed } from "@/components/PodcastEmbed";
 import { storeRemoteImage } from "@/lib/imageStore";
-import { isStoredImage } from "@/lib/storedImage";
 import { getRecentYoutubeVideos } from "@/lib/youtube";
 import { links, podcast } from "@/content/site";
 
@@ -95,7 +94,6 @@ export default async function PodcastPage() {
                   <div className="relative aspect-video w-full">
                     <Image
                       src={video.thumbnailUrl}
-                      unoptimized={isStoredImage(video.thumbnailUrl)}
                       alt=""
                       fill
                       sizes="(min-width: 640px) 33vw, 100vw"

@@ -43,6 +43,18 @@ function storageKey(sourceUrl: string): { pathname: string; keepOriginal: boolea
   return { pathname: `${PREFIX}/${hash}.${keepOriginal ? "svg" : "webp"}`, keepOriginal };
 }
 
+/** Resizes a photo/logo to at most MAX_WIDTH wide as WebP. */
+export function resizeForWeb(original: Buffer, contentType: string): Promise<Buffer> {
+  return sharp(original, {
+    animated: true, // keep animated GIFs animated
+    density: contentType.includes("svg") ? 300 : undefined, // rasterize stray SVGs sharply
+  })
+    .rotate() // honor EXIF orientation from phone photos before it's stripped
+    .resize({ width: MAX_WIDTH, withoutEnlargement: true })
+    .webp({ quality: WEBP_QUALITY }) // keeps logo transparency
+    .toBuffer();
+}
+
 // Per-instance memo, so repeated renders on a warm server don't re-check Blob.
 const resolved = new Map<string, Promise<string | null>>();
 
@@ -62,16 +74,7 @@ async function findOrCreate(sourceUrl: string, pathname: string, keepOriginal: b
   }
 
   const original = Buffer.from(await response.arrayBuffer());
-  const body = keepOriginal
-    ? original
-    : await sharp(original, {
-        animated: true, // keep animated GIFs animated
-        density: contentType.includes("svg") ? 300 : undefined, // rasterize stray SVGs sharply
-      })
-        .rotate() // honor EXIF orientation from phone photos before it's stripped
-        .resize({ width: MAX_WIDTH, withoutEnlargement: true })
-        .webp({ quality: WEBP_QUALITY }) // keeps logo transparency
-        .toBuffer();
+  const body = keepOriginal ? original : await resizeForWeb(original, contentType);
 
   const blob = await put(pathname, body, {
     access: "public",

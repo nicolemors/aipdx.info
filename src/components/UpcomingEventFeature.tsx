@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@/components/Container";
-import { isStoredImage } from "@/lib/storedImage";
 import { parseEventDate, type AiPortlandEvent } from "@/lib/notion/eventTypes";
 import { upcomingEvent } from "@/content/site";
 
@@ -41,7 +40,6 @@ export function UpcomingEventFeature({ event }: { event: AiPortlandEvent }) {
             <div className="relative h-56 w-full shrink-0 sm:h-auto sm:w-[400px]">
               <Image
                 src={event.imageUrl}
-                unoptimized={isStoredImage(event.imageUrl)}
                 alt=""
                 fill
                 sizes="(min-width: 640px) 400px, 100vw"

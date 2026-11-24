@@ -15,7 +15,6 @@ import {
   getStoryById,
   withStoredImages,
 } from "@/lib/notion/stories";
-import { isStoredImage } from "@/lib/storedImage";
 import { getYoutubeVideoId } from "@/lib/youtube";
 
 export const revalidate = 300;
@@ -90,7 +89,6 @@ export default async function StoryDetailPage({ params }: Props) {
                   <span className="relative size-7 overflow-hidden rounded-full">
                     <Image
                       src={story.author.avatarUrl}
-                      unoptimized={isStoredImage(story.author.avatarUrl)}
                       alt=""
                       fill
                       sizes="28px"
@@ -123,7 +121,6 @@ export default async function StoryDetailPage({ params }: Props) {
           <div className="relative aspect-[16/9] w-full overflow-hidden rounded-2xl">
             <Image
               src={story.coverImageSrc}
-              unoptimized={isStoredImage(story.coverImageSrc)}
               alt=""
               fill
               sizes="768px"
@@ -186,7 +183,6 @@ export default async function StoryDetailPage({ params }: Props) {
                     <div className="relative aspect-[16/10] overflow-hidden rounded-xl bg-surface">
                       <Image
                         src={imageSrc}
-                        unoptimized={isStoredImage(imageSrc)}
                         alt=""
                         fill
                         sizes="(min-width: 1024px) 11vw, (min-width: 640px) 16vw, 33vw"

@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { isStoredImage } from "@/lib/storedImage";
 import { parseEventDate, type AiPortlandEvent } from "@/lib/notion/eventTypes";
 
 function formatCardDate(event: AiPortlandEvent) {
@@ -22,7 +21,6 @@ export function EventCard({
         <div className="relative hidden size-[130px] shrink-0 sm:block">
           <Image
             src={event.imageUrl}
-            unoptimized={isStoredImage(event.imageUrl)}
             alt=""
             fill
             sizes="130px"

@@ -2,7 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@/components/Container";
 import type { Story } from "@/lib/notion/stories";
-import { isStoredImage } from "@/lib/storedImage";
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
@@ -37,7 +36,6 @@ export function LatestStoryFeature({ story, excerpt }: { story: Story; excerpt: 
           >
             <Image
               src={story.coverImageSrc ?? "/images/story-fallback.jpg"}
-              unoptimized={story.coverImageSrc ? isStoredImage(story.coverImageSrc) : false}
               alt=""
               fill
               sizes="(min-width: 1024px) 60vw, 100vw"

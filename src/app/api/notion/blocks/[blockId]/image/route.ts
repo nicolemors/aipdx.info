@@ -1,3 +1,4 @@
+import { resizeForWeb } from "@/lib/imageStore";
 import { notion } from "@/lib/notion/client";
 
 type RouteContext = { params: Promise<{ blockId: string }> };
@@ -25,11 +26,16 @@ export async function GET(_request: Request, { params }: RouteContext) {
     return new Response(null, { status: 502 });
   }
 
-  return new Response(imageResponse.body, {
+  // Fallback path for when an image has no Blob copy (see imageStore):
+  // resize here too, so visitors never get the multi-MB original, and let
+  // the CDN cache it — the URL carries a ?v= version that changes whenever
+  // the Notion page is edited.
+  const resized = await resizeForWeb(Buffer.from(await imageResponse.arrayBuffer()), contentType);
+  return new Response(new Uint8Array(resized), {
     status: 200,
     headers: {
-      "Content-Type": contentType,
-      "Cache-Control": "no-store",
+      "Content-Type": "image/webp",
+      "Cache-Control": "public, max-age=86400, s-maxage=31536000",
     },
   });
 }

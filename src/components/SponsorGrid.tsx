@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { isStoredImage } from "@/lib/storedImage";
 import type { Sponsor } from "@/lib/notion/sponsors";
 
 // One-off visual corrections for logos whose source files have very
@@ -36,7 +35,6 @@ export function SponsorGrid({ sponsors }: { sponsors: Sponsor[] }) {
             >
               <Image
                 src={sponsor.logoUrl}
-                unoptimized={isStoredImage(sponsor.logoUrl)}
                 alt={sponsor.name}
                 fill
                 sizes="192px"

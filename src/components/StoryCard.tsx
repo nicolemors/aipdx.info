@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Story } from "@/lib/notion/stories";
-import { isStoredImage } from "@/lib/storedImage";
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
@@ -14,7 +13,6 @@ export function StoryCard({ story }: { story: Story }) {
         {story.coverImageSrc && (
           <Image
             src={story.coverImageSrc}
-            unoptimized={isStoredImage(story.coverImageSrc)}
             alt=""
             fill
             sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"

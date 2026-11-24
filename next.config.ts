@@ -21,30 +21,12 @@ const nextConfig: NextConfig = {
     ];
   },
   images: {
-    localPatterns: [
-      { pathname: "/images/**" },
-      { pathname: "/api/stories/**" },
-      { pathname: "/api/notion/blocks/**" },
-    ],
-    // Sponsor/partner logos are "external" Notion files — links to whatever
-    // domain that org happens to host its own logo on (kiln.com,
-    // prosperportland.us, ...). That list can't be known ahead of time, and
-    // enumerating hostnames means every new sponsor/partner on an unseen
-    // domain 500s the page until a developer adds it and redeploys — which
-    // defeats the point of managing this content in Notion with no code
-    // changes. Notion's own uploaded files (S3-backed), Luma's og:image
-    // fallback, YouTube thumbnails, and Google avatars all also come through
-    // this same wildcard.
-    remotePatterns: [{ protocol: "https", hostname: "**" }],
-    // Notion's own uploaded files (Feature Image, Gallery, Logo, body
-    // images — the prod-files-secure.s3... URLs) are pre-signed and expire
-    // after ~1 hour. Once the optimizer successfully fetches one, cache the
-    // optimized result for a year so it's never re-fetched from that
-    // expiring URL again — otherwise a page that goes a while between
-    // visits gets a stale expired URL baked into its cached HTML, and the
-    // very next optimization attempt 403s, showing a broken image until a
-    // revalidation happens to land on a request that fetches a fresh URL.
-    minimumCacheTTL: 31536000,
+    // Every image is already sized ahead of time — /public photos are
+    // pre-resized in the repo, and remote images (Notion, Luma, logos,
+    // YouTube) are resized once into Vercel Blob (see src/lib/imageStore.ts).
+    // Serving them as-is keeps the Vercel image optimizer, and its usage
+    // quota, out of the path entirely.
+    unoptimized: true,
   },
 };
 

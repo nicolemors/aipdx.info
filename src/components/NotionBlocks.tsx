@@ -1,7 +1,6 @@
 import type { RichTextItemResponse } from "@notionhq/client/build/src/api-endpoints";
 import Image from "next/image";
 import type { BlockWithChildren } from "@/lib/notion/client";
-import { isStoredImage } from "@/lib/storedImage";
 
 // Minimal renderer covering the block types AI Portland's Stories content
 // actually uses (text, headings, lists, images, quotes, callouts, code,
@@ -150,7 +149,6 @@ function Block({ block, inColumn = false }: { block: BlockWithChildren; inColumn
         (block.image.type === "external"
           ? block.image.external.url
           : `/api/notion/blocks/${block.id}/image?v=${encodeURIComponent(block.last_edited_time)}`);
-      const unoptimized = isStoredImage(src);
       const caption = block.image.caption.length > 0 ? block.image.caption : undefined;
 
       // Inside a column, an image is a photo meant to fill its half of the
@@ -159,7 +157,7 @@ function Block({ block, inColumn = false }: { block: BlockWithChildren; inColumn
         return (
           <figure>
             <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl">
-              <Image src={src} alt="" fill sizes="(min-width: 640px) 350px, 100vw" className="object-cover" unoptimized={unoptimized} />
+              <Image src={src} alt="" fill sizes="(min-width: 640px) 350px, 100vw" className="object-cover" />
             </div>
             {caption && (
               <figcaption className="mt-2 text-center text-sm text-muted">
@@ -180,7 +178,7 @@ function Block({ block, inColumn = false }: { block: BlockWithChildren; inColumn
             <a href="https://idealistconsulting.com/" target="_blank" rel="noreferrer">
               <div className="flex h-24 w-56 items-center justify-center rounded-xl bg-paper p-4">
                 <div className="relative h-full w-full">
-                  <Image src={src} alt="Idealist Consulting" fill sizes="224px" className="object-contain" unoptimized={unoptimized} />
+                  <Image src={src} alt="Idealist Consulting" fill sizes="224px" className="object-contain" />
                 </div>
               </div>
             </a>
@@ -198,7 +196,7 @@ function Block({ block, inColumn = false }: { block: BlockWithChildren; inColumn
       return (
         <figure className="flex w-full flex-col items-center gap-2">
           <div className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl">
-            <Image src={src} alt="" fill sizes="100vw" className="object-cover" unoptimized={unoptimized} />
+            <Image src={src} alt="" fill sizes="100vw" className="object-cover" />
           </div>
           {caption && (
             <figcaption className="text-center text-sm text-muted">
